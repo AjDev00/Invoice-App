@@ -7,6 +7,7 @@ export default {
         // vibes: ["Great Vibes"],
         // kurale: ["Kurale"],
         "eb-garamond": ["Garamond"],
+        "open-sans": ["Open Sans"],
       },
     },
   },
