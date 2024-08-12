@@ -13,7 +13,7 @@ function App() {
     <AppContext.Provider value={{ toggle, setToggle }}>
       <div className="App">
         <Header />
-        <div>
+        <div className="bg-slate-100">
           <Display />
         </div>
       </div>
