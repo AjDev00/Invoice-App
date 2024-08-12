@@ -4,6 +4,12 @@ import Header from "./components/Home/Header";
 import { createContext } from "react";
 import DisplayHeader from "./components/Home/DisplayHeader";
 import DisplayInvoices from "./components/Home/DisplayInvoices";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom/cjs/react-router-dom.min";
+import CreateInvoice from "./components/Pages/CreateInvoice";
 
 export const AppContext = createContext();
 
@@ -13,11 +19,22 @@ function App() {
   return (
     <AppContext.Provider value={{ toggle, setToggle }}>
       <div className="App">
-        <Header />
-        <div className="bg-slate-100 min-h-screen">
-          <DisplayHeader />
-          <DisplayInvoices />
-        </div>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <div>
+                <Header />
+                <div className="bg-slate-100 min-h-screen">
+                  <DisplayHeader />
+                  <DisplayInvoices />
+                </div>
+              </div>
+            </Route>
+            <Route path="/create-invoice">
+              <CreateInvoice />
+            </Route>
+          </Switch>
+        </Router>
       </div>
     </AppContext.Provider>
   );
