@@ -7,7 +7,7 @@ export default function DisplayInvoices() {
         <div className="">
           <img src={empty} alt="" className="" />
         </div>
-        <div className="font-open-sans font-semibold flex flex-col justify-center items-center gap-6">
+        <div className="font-semibold flex flex-col justify-center items-center gap-6">
           <div className="text-3xl text-nowrap">There is nothing here</div>
           <div className="opacity-65 text-center text-[16px]">
             Create and invoice by clicking the <strong>New</strong> button and

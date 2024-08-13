@@ -5,7 +5,7 @@ import { Link } from "react-router-dom/cjs/react-router-dom.min";
 export default function DisplayHeader() {
   return (
     <div>
-      <div className="font-open-sans flex flex-row justify-between px-3 pt-7 items-center">
+      <div className="flex flex-row justify-between px-3 pt-7 items-center">
         <div className="font-bold">
           <div className="text-[24px] tracking-tight">Invoices</div>
           <div className="opacity-65  text-[14px]">No invoices</div>

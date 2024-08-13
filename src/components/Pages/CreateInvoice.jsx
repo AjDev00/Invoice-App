@@ -2,12 +2,13 @@ import Header from "../Home/Header";
 import leftArrow from "../../assets/icon-arrow-left.svg";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import deleteIcon from "../../assets/icon-delete.svg";
+import AddNewItem from "../Home/AddNewItem";
 
 export default function CreateInvoice() {
   const history = useHistory();
   return (
     <div>
-      <div className="mb-10 font-open-sans">
+      <div className="mb-10">
         <div>
           <Header />
         </div>
@@ -22,7 +23,7 @@ export default function CreateInvoice() {
             <div className="font-bold tracking-wide">Go back</div>
           </div>
 
-          <div className="pt-7">
+          <div className="pt-10">
             <div className="flex flex-col gap-5">
               <div className="font-bold font-open-sans text-2xl mb-2">
                 New Invoice
@@ -215,7 +216,7 @@ export default function CreateInvoice() {
                 {/* First Item Name. */}
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="" className="text-[#3a15ce]">
+                    <label htmlFor="" className="text-[#2f206b]">
                       Item Name
                     </label>
                     <input
@@ -227,27 +228,27 @@ export default function CreateInvoice() {
                   <div className="flex flex-row justify-between items-center px-1">
                     <div className="flex flex-row gap-4">
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="text-[#3a15ce]">
+                        <label htmlFor="" className="text-[#2f206b]">
                           Qty.
                         </label>
                         <input
                           type="text"
-                          placeholder="Banner Design"
+                          placeholder="1"
                           className="w-16 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="text-[#3a15ce]">
+                        <label htmlFor="" className="text-[#2f206b]">
                           Price.
                         </label>
                         <input
                           type="text"
-                          placeholder="Banner Design"
+                          placeholder="156.00"
                           className="w-24 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="mb-[17px] text-[#3a15ce]">
+                        <label htmlFor="" className="mb-[17px] text-[#2f206b]">
                           Total
                         </label>
                         <span className="font-extrabold text-[#7C5DFA] opacity-70">
@@ -264,7 +265,7 @@ export default function CreateInvoice() {
                 {/* Second Item Name. */}
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="" className="text-[#3a15ce]">
+                    <label htmlFor="" className="text-[#2f206b]">
                       Item Name
                     </label>
                     <input
@@ -276,31 +277,31 @@ export default function CreateInvoice() {
                   <div className="flex flex-row justify-between items-center px-1">
                     <div className="flex flex-row gap-4">
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="text-[#3a15ce]">
+                        <label htmlFor="" className="text-[#2f206b]">
                           Qty.
                         </label>
                         <input
                           type="text"
-                          placeholder="Banner Design"
+                          placeholder="1"
                           className="w-16 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="text-[#3a15ce]">
+                        <label htmlFor="" className="text-[#2f206b]">
                           Price.
                         </label>
                         <input
                           type="text"
-                          placeholder="Banner Design"
+                          placeholder="400.00"
                           className="w-24 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <label htmlFor="" className="mb-[17px] text-[#3a15ce]">
+                        <label htmlFor="" className="mb-[17px] text-[#2f206b]">
                           Total
                         </label>
                         <span className="font-extrabold text-[#7C5DFA] opacity-70">
-                          156.00
+                          400.00
                         </span>
                       </div>
                     </div>
@@ -308,6 +309,21 @@ export default function CreateInvoice() {
                       <img src={deleteIcon} alt="" className="mt-[30px] w-4" />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Button Check. */}
+              <AddNewItem />
+
+              <div className="flex flex-row justify-between pt-8 border-t-2">
+                <div className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer">
+                  Discard
+                </div>
+                <div className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer">
+                  Save as Draft
+                </div>
+                <div className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer">
+                  Save & Send
                 </div>
               </div>
             </form>
