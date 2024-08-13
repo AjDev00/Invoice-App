@@ -3,7 +3,7 @@ import empty from "../../assets/illustration-empty.svg";
 export default function DisplayInvoices() {
   return (
     <div>
-      <div className="flex flex-col justify-center items-center pt-16 px-5 gap-7">
+      <div className="flex flex-col justify-center items-center pt-20 px-5 gap-7">
         <div className="">
           <img src={empty} alt="" className="" />
         </div>

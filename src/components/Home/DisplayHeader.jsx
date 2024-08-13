@@ -16,8 +16,8 @@ export default function DisplayHeader() {
             <img src={arrowDown} alt="" className="w-3 h-2" />
           </div>
           <Link to="/create-invoice">
-            <div className="flex flex-row justify-center items-center border border-transparent bg-[#7C5DFA] rounded-full p-0 px-2 py-2 gap-2">
-              <div className="border border-white bg-white p-3 rounded-full">
+            <div className="flex flex-row justify-center items-center border border-transparent bg-[#7C5DFA] rounded-full p-0 px-2 py-2.5 gap-2">
+              <div className="border border-white bg-white p-1 rounded-full">
                 <img src={plus} alt="" className="w-3 h-3" />
               </div>
               <div className="text-white font-semibold tracking-wide">New</div>
