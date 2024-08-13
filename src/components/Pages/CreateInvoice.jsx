@@ -3,9 +3,32 @@ import leftArrow from "../../assets/icon-arrow-left.svg";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import deleteIcon from "../../assets/icon-delete.svg";
 import AddNewItem from "../Home/AddNewItem";
+import arrowDown from "../../assets/icon-arrow-down.svg";
+import { useRef, useState } from "react";
 
 export default function CreateInvoice() {
   const history = useHistory();
+
+  //drop-down for payment type.
+  const [openPaymentTerms, setOpenPaymentTerms] = useState(false);
+  const [paymentTerms, setPaymentTerms] = useState("-- -- --");
+
+  const selectOneDayRef = useRef(null);
+  const selectSevenDaysRef = useRef(null);
+  const selectThirtyDaysRef = useRef(null);
+
+  function handleSelectOneDay() {
+    setPaymentTerms(selectOneDayRef.current.innerText);
+  }
+
+  function handleSelectSevenDaysRef() {
+    setPaymentTerms(selectSevenDaysRef.current.innerText);
+  }
+
+  function handleSelectThirtyDaysRef() {
+    setPaymentTerms(selectThirtyDaysRef.current.innerText);
+  }
+
   return (
     <div>
       <div className="mb-10">
@@ -187,11 +210,42 @@ export default function CreateInvoice() {
                   <label htmlFor="" className="text-[#3a15ce]">
                     Payment Terms
                   </label>
-                  <input
-                    type="text"
-                    placeholder="United Kingdom"
-                    className="invalid border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-                  />
+                  <div className="flex flex-row justify-between border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300">
+                    <div>{paymentTerms}</div>
+                    <div onClick={() => setOpenPaymentTerms(!openPaymentTerms)}>
+                      <img src={arrowDown} alt="" className="w-3 h-2 mt-2" />
+                    </div>
+                  </div>
+                  {openPaymentTerms && (
+                    <div className="duration-300 flex flex-col gap-3.5 border border-slate-300 bg-white font-semibold -mt-2 rounded-md py-4">
+                      {/* 1 Day. */}
+                      <div
+                        onClick={handleSelectOneDay}
+                        ref={selectOneDayRef}
+                        className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-2 hover:duration-300 pl-2 mb-1"
+                      >
+                        Net 1 Day
+                      </div>
+
+                      {/* 7 Days. */}
+                      <div
+                        onClick={handleSelectSevenDaysRef}
+                        ref={selectSevenDaysRef}
+                        className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-2 hover:duration-300 pl-2 mb-1"
+                      >
+                        Net 7 Days
+                      </div>
+
+                      {/* 30 Days. */}
+                      <div
+                        onClick={handleSelectThirtyDaysRef}
+                        ref={selectThirtyDaysRef}
+                        className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-2 hover:duration-300 pl-2"
+                      >
+                        Net 30 Days
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Project Description. */}
@@ -202,7 +256,7 @@ export default function CreateInvoice() {
                   <input
                     type="text"
                     placeholder="Graphics Design"
-                    className="invalid border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                    className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                   />
                 </div>
               </div>
