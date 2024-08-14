@@ -10,6 +10,7 @@ import {
   Route,
 } from "react-router-dom/cjs/react-router-dom.min";
 import CreateInvoice from "./components/Pages/CreateInvoice";
+import { ToastContainer } from "react-toastify";
 
 export const AppContext = createContext();
 
@@ -36,6 +37,7 @@ function App() {
           </Switch>
         </Router>
       </div>
+      <ToastContainer />
     </AppContext.Provider>
   );
 }

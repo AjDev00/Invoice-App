@@ -24,6 +24,7 @@ export default function BillTo() {
     setBillToProjectDesc,
     register,
     errors,
+    dateErr,
   } = useContext(CreateInvoiceContext);
 
   //drop-down params for payment type.
@@ -63,10 +64,10 @@ export default function BillTo() {
             </label>
             <input
               type="text"
+              {...register("name", { required: true })}
               value={billToName}
               onChange={(e) => setBillToName(e.target.value)}
               placeholder="Alex Grim"
-              {...register("name", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
             {errors.name && (
@@ -83,10 +84,10 @@ export default function BillTo() {
             </label>
             <input
               type="email"
+              {...register("email", { required: true })}
               value={billToEmail}
               onChange={(e) => setBillToEmail(e.target.value)}
               placeholder="alexgrim@gmail.com"
-              {...register("email", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
             {errors.email && (
@@ -103,10 +104,10 @@ export default function BillTo() {
             </label>
             <input
               type="text"
+              {...register("streetAddress", { required: true })}
               value={billToAddress}
               onChange={(e) => setBillToAddress(e.target.value)}
               placeholder="84 Church Way"
-              {...register("streetAddress", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
             {errors.streetAddress && (
@@ -125,13 +126,13 @@ export default function BillTo() {
               </label>
               <input
                 type="text"
+                {...register("toCity", { required: true })}
                 value={billToCity}
                 onChange={(e) => setBillToCity(e.target.value)}
                 placeholder="Bradford"
-                {...register("city", { required: true })}
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {errors.city && (
+              {errors.toCity && (
                 <span className="text-red-500 font-semibold">
                   This field is required!
                 </span>
@@ -145,13 +146,13 @@ export default function BillTo() {
               </label>
               <input
                 type="text"
+                {...register("toPostCode", { required: true })}
                 value={billToPostCode}
                 onChange={(e) => setBillToPostCode(e.target.value)}
                 placeholder="BD1 39PB"
-                {...register("postCode", { required: true })}
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {errors.postCode && (
+              {errors.toPostCode && (
                 <span className="text-red-500 font-semibold">
                   This field is required!
                 </span>
@@ -166,13 +167,13 @@ export default function BillTo() {
             </label>
             <input
               type="text"
+              {...register("toCountry", { required: true })}
               value={billToCountry}
               onChange={(e) => setBillToCountry(e.target.value)}
               placeholder="United Kingdom"
-              {...register("country", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.country && (
+            {errors.toCountry && (
               <span className="text-red-500 font-semibold">
                 This field is required!
               </span>
@@ -185,15 +186,19 @@ export default function BillTo() {
               Invoice Date
             </label>
             <input
-              type="date"
-              // value={billToInvoiceDate}
-              // onChange={(e) => setBillToInvoiceDate(e.target.value)}
-              placeholder="21 Aug 2021"
+              type="text"
               {...register("date", { required: true })}
+              value={billToInvoiceDate}
+              onChange={(e) => setBillToInvoiceDate(e.target.value)}
+              placeholder="2021-Aug-12"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
             />
-            {errors.date && (
-              <span className="text-red-500 font-semibold">Pick a date!</span>
+            {dateErr ? (
+              <div className="text-red-500 font-semibold">{dateErr}</div>
+            ) : (
+              errors.date && (
+                <span className="text-red-500 font-semibold">Pick a date!</span>
+              )
             )}
           </div>
 
@@ -251,10 +256,10 @@ export default function BillTo() {
             </label>
             <input
               type="text"
+              {...register("projectDesc", { required: true })}
               value={billToProjectDesc}
               onChange={(e) => setBillToProjectDesc(e.target.value)}
               placeholder="Graphics Design"
-              {...register("projectDesc", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
             {errors.projectDesc && (

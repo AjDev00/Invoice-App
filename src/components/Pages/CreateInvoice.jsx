@@ -3,7 +3,7 @@ import leftArrow from "../../assets/icon-arrow-left.svg";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import AddNewItem from "../Home/AddNewItem";
 import { createContext, useContext, useRef, useState } from "react";
-import { AppContext } from "../../App";
+import "react-toastify/dist/ReactToastify.css";
 import BillFrom from "../New/BillFrom";
 import BillTo from "../New/BillTo";
 import ItemList from "../New/ItemList";
@@ -15,6 +15,7 @@ import {
 } from "@headlessui/react";
 import { BsExclamationTriangleFill } from "react-icons/bs";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export const CreateInvoiceContext = createContext();
 
@@ -43,6 +44,9 @@ export default function CreateInvoice() {
   const [billToInvoiceDate, setBillToInvoiceDate] = useState("");
   const [billToPaymentTerms, setBillToPaymentTerms] = useState("Net 30 Days");
   const [billToProjectDesc, setBillToProjectDesc] = useState("");
+
+  //error handling.
+  const [dateErr, setDateErr] = useState("");
 
   const history = useHistory();
 
@@ -75,6 +79,44 @@ export default function CreateInvoice() {
 
   function onSubmit() {
     console.log("submitted");
+  }
+
+  //save to draft.
+  async function submitDraft() {
+    const newData = {
+      // ...data,
+      bill_from_street_address: billFromAddress,
+      bill_from_city: billFromCity,
+      bill_from_post_code: billFromPostCode,
+      bill_from_country: billFromCountry,
+      bill_to_client_name: billToName,
+      bill_to_client_email: billToEmail,
+      bill_to_street_address: billToAddress,
+      bill_to_city: billToCity,
+      bill_to_post_code: billToPostCode,
+      bill_to_country: billToCountry,
+      bill_to_invoice_date: billToInvoiceDate,
+      bill_to_payment_terms: billToPaymentTerms,
+      bill_to_project_desc: billToProjectDesc,
+    };
+
+    const res = await fetch("http://localhost:8000/api/drafts", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    });
+
+    const draftData = await res.json();
+    // console.log(draftData);
+
+    if (draftData.status === false) {
+      setDateErr(draftData.errors.bill_to_invoice_date[0]);
+      toast("Unable to save as Draft!");
+    } else {
+      toast("Saved as Draft!");
+    }
   }
 
   return (
@@ -112,6 +154,7 @@ export default function CreateInvoice() {
         setBillToProjectDesc,
         register,
         errors,
+        dateErr,
       }}
     >
       <div>
@@ -173,9 +216,21 @@ export default function CreateInvoice() {
                   >
                     Discard
                   </div>
-                  <div className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer">
-                    Save as Draft
-                  </div>
+                  {billFromAddress ? (
+                    <div
+                      onClick={submitDraft}
+                      className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
+                    >
+                      Save as Draft
+                    </div>
+                  ) : (
+                    <div
+                      // disabled="disabled"
+                      className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-not-allowed"
+                    >
+                      Save as Draft
+                    </div>
+                  )}
                   <button
                     type="submit"
                     className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer"

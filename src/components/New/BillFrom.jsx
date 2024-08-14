@@ -26,13 +26,13 @@ export default function BillFrom() {
             </label>
             <input
               type="text"
+              {...register("fromAddress", { required: true })}
               value={billFromAddress}
               onChange={(e) => setBillFromAddress(e.target.value)}
               placeholder="19 Union Terrace"
-              {...register("address", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.address && (
+            {errors.fromAddress && (
               <span className="text-red-500 font-semibold">
                 This field is required!
               </span>
@@ -48,13 +48,13 @@ export default function BillFrom() {
               </label>
               <input
                 type="text"
+                {...register("fromCity", { required: true })}
                 value={billFromCity}
                 onChange={(e) => setBillFromCity(e.target.value)}
                 placeholder="London"
-                {...register("city", { required: true })}
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {errors.city && (
+              {errors.fromCity && (
                 <span className="text-red-500 font-semibold">
                   This field is required!
                 </span>
@@ -68,13 +68,13 @@ export default function BillFrom() {
               </label>
               <input
                 type="text"
+                {...register("fromPostCode", { required: true })}
                 value={billFromPostCode}
                 onChange={(e) => setBillFromPostCode(e.target.value)}
                 placeholder="E1 3EZ"
-                {...register("postCode", { required: true })}
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {errors.postCode && (
+              {errors.fromPostCode && (
                 <span className="text-red-500 font-semibold">
                   This field is required!
                 </span>
@@ -89,13 +89,13 @@ export default function BillFrom() {
             </label>
             <input
               type="text"
+              {...register("fromCountry", { required: true })}
               value={billFromCountry}
               onChange={(e) => setBillFromCountry(e.target.value)}
               placeholder="United Kingdom"
-              {...register("country", { required: true })}
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.country && (
+            {errors.fromCountry && (
               <span className="text-red-500 font-semibold">
                 This field is required!
               </span>
