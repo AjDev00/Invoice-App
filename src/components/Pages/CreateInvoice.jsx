@@ -45,6 +45,7 @@ export default function CreateInvoice() {
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
   } = useForm({
@@ -72,14 +73,9 @@ export default function CreateInvoice() {
     setItems(newItems);
   }
 
-  function onSubmit() {
-    console.log("submitted");
-  }
-
   //save to draft.
-  async function submitDraft() {
-    const newData = { ...billFrom, ...billTo };
-    const draftData = await createDraft(newData);
+  async function submitDraft(data) {
+    const draftData = await createDraft(data);
     // console.log(draftData);
 
     if (draftData.status === false) {
@@ -87,24 +83,22 @@ export default function CreateInvoice() {
       toast("Unable to save as Draft!");
     } else {
       toast("Saved as Draft!");
-      setBillFrom(defaultBillFrom);
-      setBillTo(defaultBillTo);
+      reset();
     }
   }
 
   //-- insert/create invoices
-  async function onSubmit() {
-    const newData = { ...billFrom, ...billTo };
-    const invoiceData = await createInvoice(newData);
+  async function onSubmit(data) {
+    const invoiceData = await createInvoice(data);
     console.log(invoiceData);
 
     const itemListData = await createItemLists(items);
     console.log(items);
 
     if (invoiceData.status === false) {
-      toast(invoiceData.error.msg);
+      toast(invoiceData.errors.message);
     } else if (itemListData.status === false) {
-      toast(itemListData.error.msg);
+      toast(itemListData.errors.message);
     } else {
       toast("Invoice created successfully");
       history.push("/");
@@ -173,7 +167,7 @@ export default function CreateInvoice() {
                 </div>
                 {billToPaymentTerms ? (
                   <div
-                    onClick={submitDraft}
+                    onClick={handleSubmit(submitDraft)}
                     className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
                   >
                     Save as Draft

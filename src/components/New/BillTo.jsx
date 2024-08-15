@@ -1,30 +1,4 @@
-import { useContext, useRef, useState } from "react";
-import arrowDown from "../../assets/icon-arrow-down.svg";
-import { CreateInvoiceContext } from "../Pages/CreateInvoice";
-
 export default function BillTo({ register, errors }) {
-  //drop-down params for payment type.
-  const [openPaymentTerms, setOpenPaymentTerms] = useState(false);
-
-  const selectOneDayRef = useRef(null);
-  const selectSevenDaysRef = useRef(null);
-  const selectThirtyDaysRef = useRef(null);
-
-  function handleSelectOneDay() {
-    setBillToPaymentTerms(selectOneDayRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
-
-  function handleSelectSevenDaysRef() {
-    setBillToPaymentTerms(selectSevenDaysRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
-
-  function handleSelectThirtyDaysRef() {
-    setBillToPaymentTerms(selectThirtyDaysRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
-
   return (
     <div>
       <div>
@@ -40,21 +14,14 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("name", { required: true })}
-              onChange={(e) => setBillToName(e.target.value)}
+              {...register("bill_to_client_name", { required: true })}
               placeholder="Alex Grim"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToNameErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.name && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_client_name && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_client_name)}
+              </span>
             )}
           </div>
 
@@ -65,22 +32,14 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="email"
-              {...register("email", { required: true })}
-              value={billToEmail}
-              onChange={(e) => setBillToEmail(e.target.value)}
+              {...register("bill_to_client_email", { required: true })}
               placeholder="alexgrim@gmail.com"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToEmailErr ? (
-              <div className="text-red-500 font-semibold">
-                Must be a valid email!
-              </div>
-            ) : (
-              errors.email && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_client_email && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_client_email)}
+              </span>
             )}
           </div>
 
@@ -91,22 +50,14 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("streetAddress", { required: true })}
-              value={billToAddress}
-              onChange={(e) => setBillToAddress(e.target.value)}
+              {...register("bill_to_street_address", { required: true })}
               placeholder="84 Church Way"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToAddressErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.streetAddress && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_street_address && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_street_address)}
+              </span>
             )}
           </div>
 
@@ -119,22 +70,14 @@ export default function BillTo({ register, errors }) {
               </label>
               <input
                 type="text"
-                {...register("toCity", { required: true })}
-                value={billToCity}
-                onChange={(e) => setBillToCity(e.target.value)}
+                {...register("bill_to_city", { required: true })}
                 placeholder="Bradford"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {billToCityErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.toCity && (
-                  <span className="text-red-500 font-semibold">
-                    This field is required!
-                  </span>
-                )
+              {errors.bill_to_city && (
+                <span className="text-red-500 font-semibold">
+                  {errorMsg(errors.bill_to_city)}
+                </span>
               )}
             </div>
 
@@ -145,22 +88,14 @@ export default function BillTo({ register, errors }) {
               </label>
               <input
                 type="text"
-                {...register("toPostCode", { required: true })}
-                value={billToPostCode}
-                onChange={(e) => setBillToPostCode(e.target.value)}
+                {...register("bill_to_post_code", { required: true })}
                 placeholder="BD1 39PB"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {billToPostCodeErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.toPostCode && (
-                  <span className="text-red-500 font-semibold">
-                    This field is required!
-                  </span>
-                )
+              {errors.bill_to_post_code && (
+                <span className="text-red-500 font-semibold">
+                  {errorMsg(errors.bill_to_post_code)}
+                </span>
               )}
             </div>
           </div>
@@ -172,22 +107,14 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("toCountry", { required: true })}
-              value={billToCountry}
-              onChange={(e) => setBillToCountry(e.target.value)}
+              {...register("bill_to_country", { required: true })}
               placeholder="United Kingdom"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToCountryErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.toCountry && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_country && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_country)}
+              </span>
             )}
           </div>
 
@@ -198,9 +125,7 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("date", { required: true })}
-              value={billToInvoiceDate}
-              onChange={(e) => setBillToInvoiceDate(e.target.value)}
+              {...register("bill_to_invoice_date", { required: true })}
               placeholder="2021-Aug-12"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
             />
@@ -211,7 +136,7 @@ export default function BillTo({ register, errors }) {
             ) : dateErr ? (
               <div className="text-red-500 font-semibold">{dateErr}</div>
             ) : (
-              errors.date && (
+              errors.bill_to_invoice_date && (
                 <span className="text-red-500 font-semibold">Pick a date!</span>
               )
             )}
@@ -235,36 +160,11 @@ export default function BillTo({ register, errors }) {
                 />
               </div>
             </div>
-            {openPaymentTerms && (
-              <div className="duration-300 flex flex-col gap-3.5 border border-slate-300 bg-white font-semibold -mt-2 rounded-md">
-                {/* 1 Day. */}
-                <div
-                  onClick={handleSelectOneDay}
-                  ref={selectOneDayRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-4 duration-100 cursor-pointer"
-                >
-                  Net 1 Day
-                </div>
-
-                {/* 7 Days. */}
-                <div
-                  onClick={handleSelectSevenDaysRef}
-                  ref={selectSevenDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-2 duration-100 cursor-pointer"
-                >
-                  Net 7 Days
-                </div>
-
-                {/* 30 Days. */}
-                <div
-                  onClick={handleSelectThirtyDaysRef}
-                  ref={selectThirtyDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 pt-2 duration-100 cursor-pointer"
-                >
-                  Net 30 Days
-                </div>
-              </div>
-            )}
+            <select {...register("bill_to_payment_terms", { required: true })}>
+              <option>Net 1 Day</option>
+              <option>Net 7 Days</option>
+              <option>Net 30 Days</option>
+            </select>
           </div>
 
           {/* Project Description. */}
@@ -274,22 +174,14 @@ export default function BillTo({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("projectDesc", { required: true })}
-              value={billToProjectDesc}
-              onChange={(e) => setBillToProjectDesc(e.target.value)}
+              {...register("bill_to_project_desc", { required: true })}
               placeholder="Graphics Design"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToProjectDescErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.projectDesc && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_project_desc && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_project_desc)}
+              </span>
             )}
           </div>
         </div>

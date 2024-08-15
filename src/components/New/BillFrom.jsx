@@ -1,6 +1,3 @@
-import { useContext } from "react";
-import { CreateInvoiceContext } from "../Pages/CreateInvoice";
-
 export default function BillFrom({ register, errors }) {
   const errorMsg = (error) => {
     if (error?.type === "required") return `This field is required!`;
@@ -19,14 +16,16 @@ export default function BillFrom({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("fromAddress", { required: true, min: 3 })}
-              onChange={(e) => setBillFromAddress(e.target.value)}
+              {...register("bill_from_street_address", {
+                required: true,
+                min: 3,
+              })}
               placeholder="19 Union Terrace"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.fromAddress && (
+            {errors.bill_from_street_address && (
               <span className="text-red-500 font-semibold">
-                {errorMsg(errors.fromAddress)}
+                {errorMsg(errors.bill_from_street_address)}
               </span>
             )}
           </div>
@@ -40,17 +39,16 @@ export default function BillFrom({ register, errors }) {
               </label>
               <input
                 type="text"
-                {...register("fromCity", {
+                {...register("bill_from_city", {
                   required: true,
                   // minLenght: { value: 3, message: "MinLength is 3 characters" },
                 })}
-                onChange={(e) => setBillFromCity(e.target.value)}
                 placeholder="London"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {errors.fromCity && (
+              {errors.bill_from_city && (
                 <span className="text-red-500 font-semibold">
-                  {errorMsg(errors.fromCity)}
+                  {errorMsg(errors.bill_from_city)}
                 </span>
               )}
             </div>
@@ -62,14 +60,13 @@ export default function BillFrom({ register, errors }) {
               </label>
               <input
                 type="text"
-                {...register("fromPostCode", { required: true })}
-                onChange={(e) => setBillFromPostCode(e.target.value)}
+                {...register("bill_from_post_code", { required: true })}
                 placeholder="E1 3EZ"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {errors.fromPostCode && (
+              {errors.bill_from_post_code && (
                 <span className="text-red-500 font-semibold">
-                  {errorMsg(errors.fromPostCode)}
+                  {errorMsg(errors.bill_from_post_code)}
                 </span>
               )}
             </div>
@@ -82,14 +79,13 @@ export default function BillFrom({ register, errors }) {
             </label>
             <input
               type="text"
-              {...register("fromCountry", { required: true })}
-              onChange={(e) => setBillFromCountry(e.target.value)}
+              {...register("bill_from_country", { required: true })}
               placeholder="United Kingdom"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.fromCountry && (
+            {errors.bill_from_country && (
               <span className="text-red-500 font-semibold">
-                {errorMsg(errors.fromCountry)}
+                {errorMsg(errors.bill_from_country)}
               </span>
             )}
           </div>
