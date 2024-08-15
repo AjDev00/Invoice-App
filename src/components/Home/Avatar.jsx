@@ -13,13 +13,13 @@ export default function Avatar() {
           <img
             src={moon}
             alt=""
-            className="border-r border-white p-6 border-opacity-10"
+            className="border-r border-white p-6 border-opacity-10 cursor-pointer"
           />
         ) : (
           <img
             src={sun}
             alt=""
-            className="border-r border-white p-6 border-opacity-10"
+            className="border-r border-white p-6 border-opacity-10 cursor-pointer"
           />
         )}
       </div>

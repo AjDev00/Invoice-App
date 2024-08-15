@@ -13,6 +13,10 @@ export default function BillFrom() {
     setBillFromCountry,
     register,
     errors,
+    billFromAddressErr,
+    billFromCityErr,
+    billFromPostCodeErr,
+    billFromCountryErr,
   } = useContext(CreateInvoiceContext);
 
   return (
@@ -26,16 +30,22 @@ export default function BillFrom() {
             </label>
             <input
               type="text"
-              {...register("fromAddress", { required: true })}
+              {...register("fromAddress", { required: true, min: 3 })}
               value={billFromAddress}
               onChange={(e) => setBillFromAddress(e.target.value)}
               placeholder="19 Union Terrace"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.fromAddress && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billFromAddressErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.fromAddress && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
 
@@ -48,16 +58,25 @@ export default function BillFrom() {
               </label>
               <input
                 type="text"
-                {...register("fromCity", { required: true })}
+                {...register("fromCity", {
+                  required: true,
+                  // minLenght: { value: 3, message: "MinLength is 3 characters" },
+                })}
                 value={billFromCity}
                 onChange={(e) => setBillFromCity(e.target.value)}
                 placeholder="London"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {errors.fromCity && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
+              {billFromCityErr ? (
+                <div className="text-red-500 font-semibold">
+                  Min of 3 characters!
+                </div>
+              ) : (
+                errors.fromCity && (
+                  <span className="text-red-500 font-semibold">
+                    This field is required!
+                  </span>
+                )
               )}
             </div>
 
@@ -74,10 +93,16 @@ export default function BillFrom() {
                 placeholder="E1 3EZ"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {errors.fromPostCode && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
+              {billFromPostCodeErr ? (
+                <div className="text-red-500 font-semibold">
+                  Min of 3 characters!
+                </div>
+              ) : (
+                errors.fromPostCode && (
+                  <span className="text-red-500 font-semibold">
+                    This field is required!
+                  </span>
+                )
               )}
             </div>
           </div>
@@ -95,10 +120,16 @@ export default function BillFrom() {
               placeholder="United Kingdom"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.fromCountry && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billFromCountryErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.fromCountry && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
         </div>

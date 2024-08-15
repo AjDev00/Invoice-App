@@ -4,8 +4,14 @@ import { CreateInvoiceContext } from "../Pages/CreateInvoice";
 import SecondItemList from "./SecondItemList";
 
 export default function FirstItemList() {
-  const { items, handleInputChange, handleDelete } =
-    useContext(CreateInvoiceContext);
+  const {
+    items,
+    handleInputChange,
+    handleDelete,
+    itemNameErr,
+    quantityErr,
+    priceErr,
+  } = useContext(CreateInvoiceContext);
 
   return (
     <div>
@@ -29,6 +35,7 @@ export default function FirstItemList() {
                   onChange={(e) => handleInputChange(index, e)}
                   className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                 />
+                {itemNameErr ? <div>{itemNameErr}</div> : ""}
               </div>
 
               <div className="flex flex-row justify-between items-center px-1">
@@ -46,6 +53,7 @@ export default function FirstItemList() {
                       onChange={(e) => handleInputChange(index, e)}
                       className="w-16 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                     />
+                    {quantityErr ? <div>{quantityErr}</div> : ""}
                   </div>
 
                   {/* Price. */}
@@ -61,6 +69,7 @@ export default function FirstItemList() {
                       onChange={(e) => handleInputChange(index, e)}
                       className="w-24 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                     />
+                    {priceErr ? <div>{priceErr}</div> : ""}
                   </div>
 
                   {/* Total. */}

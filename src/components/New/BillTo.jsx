@@ -25,6 +25,14 @@ export default function BillTo() {
     register,
     errors,
     dateErr,
+    billToNameErr,
+    billToEmailErr,
+    billToAddressErr,
+    billToCityErr,
+    billToPostCodeErr,
+    billToCountryErr,
+    billToInvoiceDateErr,
+    billToProjectDescErr,
   } = useContext(CreateInvoiceContext);
 
   //drop-down params for payment type.
@@ -70,10 +78,16 @@ export default function BillTo() {
               placeholder="Alex Grim"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.name && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billToNameErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.name && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
 
@@ -90,10 +104,16 @@ export default function BillTo() {
               placeholder="alexgrim@gmail.com"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.email && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billToEmailErr ? (
+              <div className="text-red-500 font-semibold">
+                Must be a valid email!
+              </div>
+            ) : (
+              errors.email && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
 
@@ -110,10 +130,16 @@ export default function BillTo() {
               placeholder="84 Church Way"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.streetAddress && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billToAddressErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.streetAddress && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
 
@@ -132,10 +158,16 @@ export default function BillTo() {
                 placeholder="Bradford"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
               />
-              {errors.toCity && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
+              {billToCityErr ? (
+                <div className="text-red-500 font-semibold">
+                  Min of 3 characters!
+                </div>
+              ) : (
+                errors.toCity && (
+                  <span className="text-red-500 font-semibold">
+                    This field is required!
+                  </span>
+                )
               )}
             </div>
 
@@ -152,10 +184,16 @@ export default function BillTo() {
                 placeholder="BD1 39PB"
                 className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
               />
-              {errors.toPostCode && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
+              {billToPostCodeErr ? (
+                <div className="text-red-500 font-semibold">
+                  Min of 3 characters!
+                </div>
+              ) : (
+                errors.toPostCode && (
+                  <span className="text-red-500 font-semibold">
+                    This field is required!
+                  </span>
+                )
               )}
             </div>
           </div>
@@ -173,10 +211,16 @@ export default function BillTo() {
               placeholder="United Kingdom"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.toCountry && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billToCountryErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.toCountry && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
 
@@ -193,7 +237,11 @@ export default function BillTo() {
               placeholder="2021-Aug-12"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
             />
-            {dateErr ? (
+            {billToInvoiceDateErr ? (
+              <div className="text-red-500 font-semibold">
+                Must be a valid date!
+              </div>
+            ) : dateErr ? (
               <div className="text-red-500 font-semibold">{dateErr}</div>
             ) : (
               errors.date && (
@@ -207,9 +255,12 @@ export default function BillTo() {
             <label htmlFor="" className="text-[#3a15ce]">
               Payment Terms
             </label>
-            <div className="flex flex-row justify-between border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300">
+            <div
+              onClick={() => setOpenPaymentTerms(!openPaymentTerms)}
+              className="cursor-pointer flex flex-row justify-between border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
+            >
               <div>{billToPaymentTerms}</div>
-              <div onClick={() => setOpenPaymentTerms(!openPaymentTerms)}>
+              <div>
                 <img
                   src={arrowDown}
                   alt=""
@@ -223,7 +274,7 @@ export default function BillTo() {
                 <div
                   onClick={handleSelectOneDay}
                   ref={selectOneDayRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-4 duration-100"
+                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-4 duration-100 cursor-pointer"
                 >
                   Net 1 Day
                 </div>
@@ -232,7 +283,7 @@ export default function BillTo() {
                 <div
                   onClick={handleSelectSevenDaysRef}
                   ref={selectSevenDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-2 duration-100"
+                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-2 duration-100 cursor-pointer"
                 >
                   Net 7 Days
                 </div>
@@ -241,7 +292,7 @@ export default function BillTo() {
                 <div
                   onClick={handleSelectThirtyDaysRef}
                   ref={selectThirtyDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 pt-2 duration-100"
+                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 pt-2 duration-100 cursor-pointer"
                 >
                   Net 30 Days
                 </div>
@@ -262,10 +313,16 @@ export default function BillTo() {
               placeholder="Graphics Design"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {errors.projectDesc && (
-              <span className="text-red-500 font-semibold">
-                This field is required!
-              </span>
+            {billToProjectDescErr ? (
+              <div className="text-red-500 font-semibold">
+                Min of 3 characters!
+              </div>
+            ) : (
+              errors.projectDesc && (
+                <span className="text-red-500 font-semibold">
+                  This field is required!
+                </span>
+              )
             )}
           </div>
         </div>

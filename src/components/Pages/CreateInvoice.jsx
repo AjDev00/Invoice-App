@@ -28,6 +28,8 @@ export default function CreateInvoice() {
     formState: { errors },
   } = useForm();
 
+  const history = useHistory();
+
   //bill-From params.
   const [billFromAddress, setBillFromAddress] = useState("");
   const [billFromCity, setBillFromCity] = useState("");
@@ -47,12 +49,26 @@ export default function CreateInvoice() {
 
   //error handling.
   const [dateErr, setDateErr] = useState("");
+  const [billFromAddressErr, setBillFromAddressErr] = useState("");
+  const [billFromCityErr, setBillFromCityErr] = useState("");
+  const [billFromPostCodeErr, setBillFromPostCodeErr] = useState("");
+  const [billFromCountryErr, setBillFromCountryErr] = useState("");
+  const [billToNameErr, setBillToNameErr] = useState("");
+  const [billToEmailErr, setBillToEmailErr] = useState("");
+  const [billToAddressErr, setBillToAddressErr] = useState("");
+  const [billToCityErr, setBillToCityErr] = useState("");
+  const [billToPostCodeErr, setBillToPostCodeErr] = useState("");
+  const [billToCountryErr, setBillToCountryErr] = useState("");
+  const [billToInvoiceDateErr, setBillToInvoiceDateErr] = useState("");
+  const [billToProjectDescErr, setBillToProjectDescErr] = useState("");
+  const [itemNameErr, setItemNameErr] = useState("");
+  const [quantityErr, setQuantityErr] = useState("");
+  const [priceErr, setPriceErr] = useState("");
 
-  const history = useHistory();
-
+  //array of forms.
   const [items, setItems] = useState([]);
 
-  //control modal.
+  //control discard modal.
   const [open, setOpen] = useState(false);
 
   //function to create a new form array when clicked.
@@ -116,6 +132,89 @@ export default function CreateInvoice() {
       toast("Unable to save as Draft!");
     } else {
       toast("Saved as Draft!");
+      setBillFromAddress("");
+      setBillFromCity("");
+      setBillFromPostCode("");
+      setBillFromCountry("");
+      setBillToName("");
+      setBillToEmail("");
+      setBillToAddress("");
+      setBillToCity("");
+      setBillToCountry("");
+      setBillToInvoiceDate("");
+      setBillToProjectDesc("");
+    }
+  }
+
+  //-- insert/create invoices
+  async function onSubmit() {
+    //insert billTo and billFrom.
+    const newData = {
+      bill_from_street_address: billFromAddress,
+      bill_from_city: billFromCity,
+      bill_from_post_code: billFromPostCode,
+      bill_from_country: billFromCountry,
+      bill_to_client_name: billToName,
+      bill_to_client_email: billToEmail,
+      bill_to_street_address: billToAddress,
+      bill_to_city: billToCity,
+      bill_to_post_code: billToPostCode,
+      bill_to_country: billToCountry,
+      bill_to_invoice_date: billToInvoiceDate,
+      bill_to_payment_terms: billToPaymentTerms,
+      bill_to_project_desc: billToProjectDesc,
+    };
+
+    const res = await fetch("http://localhost:8000/api/invoices", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    });
+
+    const invoiceData = await res.json();
+    console.log(invoiceData);
+
+    //insert item-list.
+    const itemList = {
+      item_name: itemName,
+      quantity: Qty,
+      price: Price,
+      total: Qty * Price,
+    };
+
+    const resList = await fetch("http://localhost:8000/api/item-list", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(itemList),
+    });
+
+    const itemListData = await resList.json();
+    console.log(itemListData);
+
+    if (invoiceData.status === false) {
+      setBillToAddressErr(invoiceData.errors.bill_to_street_address);
+      setBillToCityErr(invoiceData.errors.bill_to_city);
+      setBillToPostCodeErr(invoiceData.errors.bill_to_post_code);
+      setBillToCountryErr(invoiceData.errors.bill_to_country);
+      setBillToInvoiceDateErr(invoiceData.errors.bill_to_invoice_date);
+      setBillToProjectDescErr(invoiceData.errors.bill_to_project_desc);
+      setBillFromAddressErr(invoiceData.errors.bill_from_street_address);
+      setBillFromCityErr(invoiceData.errors.bill_from_city);
+      setBillFromPostCodeErr(invoiceData.errors.bill_from_post_code);
+      setBillFromCountryErr(invoiceData.errors.bill_from_country);
+      setBillToNameErr(invoiceData.errors.bill_to_client_name);
+      setBillToEmailErr(invoiceData.errors.bill_to_client_email);
+    } else if (itemListData.status === false) {
+      setItemNameErr(itemListData.errors.item_name);
+      setQuantityErr(itemListData.errors.quantity);
+      setPriceErr(itemListData.errors.price);
+    } else {
+      toast("Invoice created successfully");
+      history.push("/");
     }
   }
 
@@ -155,6 +254,21 @@ export default function CreateInvoice() {
         register,
         errors,
         dateErr,
+        billFromAddressErr,
+        billFromCityErr,
+        billFromPostCodeErr,
+        billFromCountryErr,
+        billToNameErr,
+        billToEmailErr,
+        billToAddressErr,
+        billToCityErr,
+        billToPostCodeErr,
+        billToCountryErr,
+        billToInvoiceDateErr,
+        billToProjectDescErr,
+        itemNameErr,
+        quantityErr,
+        priceErr,
       }}
     >
       <div>
@@ -216,7 +330,7 @@ export default function CreateInvoice() {
                   >
                     Discard
                   </div>
-                  {billFromAddress ? (
+                  {billToPaymentTerms ? (
                     <div
                       onClick={submitDraft}
                       className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
