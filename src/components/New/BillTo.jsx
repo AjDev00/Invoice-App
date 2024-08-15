@@ -2,9 +2,7 @@ import { useContext, useRef, useState } from "react";
 import arrowDown from "../../assets/icon-arrow-down.svg";
 import { CreateInvoiceContext } from "../Pages/CreateInvoice";
 
-export default function BillTo() {
-  const { register, errors, dateErr } = useContext(CreateInvoiceContext);
-
+export default function BillTo({ register, errors }) {
   //drop-down params for payment type.
   const [openPaymentTerms, setOpenPaymentTerms] = useState(false);
 
@@ -43,7 +41,6 @@ export default function BillTo() {
             <input
               type="text"
               {...register("name", { required: true })}
-              value={billToName}
               onChange={(e) => setBillToName(e.target.value)}
               placeholder="Alex Grim"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"

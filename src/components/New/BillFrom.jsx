@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CreateInvoiceContext } from "../Pages/CreateInvoice";
 
-export default function BillFrom() {
+export default function BillFrom({ register, errors }) {
   const errorMsg = (error) => {
     if (error?.type === "required") return `This field is required!`;
     else if (error?.type === "min") return "Min of 3 characters!";
