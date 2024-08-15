@@ -3,37 +3,7 @@ import arrowDown from "../../assets/icon-arrow-down.svg";
 import { CreateInvoiceContext } from "../Pages/CreateInvoice";
 
 export default function BillTo() {
-  const {
-    billToName,
-    setBillToName,
-    billToEmail,
-    setBillToEmail,
-    billToAddress,
-    setBillToAddress,
-    billToCity,
-    setBillToCity,
-    billToPostCode,
-    setBillToPostCode,
-    billToCountry,
-    setBillToCountry,
-    billToInvoiceDate,
-    setBillToInvoiceDate,
-    billToPaymentTerms,
-    setBillToPaymentTerms,
-    billToProjectDesc,
-    setBillToProjectDesc,
-    register,
-    errors,
-    dateErr,
-    billToNameErr,
-    billToEmailErr,
-    billToAddressErr,
-    billToCityErr,
-    billToPostCodeErr,
-    billToCountryErr,
-    billToInvoiceDateErr,
-    billToProjectDescErr,
-  } = useContext(CreateInvoiceContext);
+  const { register, errors, dateErr } = useContext(CreateInvoiceContext);
 
   //drop-down params for payment type.
   const [openPaymentTerms, setOpenPaymentTerms] = useState(false);

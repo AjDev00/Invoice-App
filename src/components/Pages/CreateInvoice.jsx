@@ -16,10 +16,39 @@ import {
 import { BsExclamationTriangleFill } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  createDraft,
+  createInvoice,
+  createItemLists,
+} from "../../services/invoiceServices";
 
 export const CreateInvoiceContext = createContext();
 
+const defaultBillFrom = {
+  bill_from_street_address: "",
+  bill_from_city: "",
+  bill_from_post_code: "",
+  bill_from_country: "",
+};
+
+const defaultBillTo = {
+  bill_to_client_name: "",
+  bill_to_client_email: "",
+  bill_to_street_address: "",
+  bill_to_city: "",
+  bill_to_post_code: "",
+  bill_to_country: "",
+  bill_to_invoice_date: "",
+  bill_to_payment_terms: "Net 30 Days",
+  bill_to_project_desc: "",
+};
+
 export default function CreateInvoice() {
+  const [items, setItems] = useState([]); //array of forms.
+  const [open, setOpen] = useState(false); //control discard modal.
+  const history = useHistory();
+  const [billFrom, setBillFrom] = useState(defaultBillFrom);
+  const [billTo, setBillTo] = useState(defaultBillTo);
   //react-hook form params.
   const {
     register,
@@ -27,49 +56,6 @@ export default function CreateInvoice() {
     watch,
     formState: { errors },
   } = useForm();
-
-  const history = useHistory();
-
-  //bill-From params.
-  const [billFromAddress, setBillFromAddress] = useState("");
-  const [billFromCity, setBillFromCity] = useState("");
-  const [billFromPostCode, setBillFromPostCode] = useState("");
-  const [billFromCountry, setBillFromCountry] = useState("");
-
-  //bill-To params.
-  const [billToName, setBillToName] = useState("");
-  const [billToEmail, setBillToEmail] = useState("");
-  const [billToAddress, setBillToAddress] = useState("");
-  const [billToCity, setBillToCity] = useState("");
-  const [billToPostCode, setBillToPostCode] = useState("");
-  const [billToCountry, setBillToCountry] = useState("");
-  const [billToInvoiceDate, setBillToInvoiceDate] = useState("");
-  const [billToPaymentTerms, setBillToPaymentTerms] = useState("Net 30 Days");
-  const [billToProjectDesc, setBillToProjectDesc] = useState("");
-
-  //error handling.
-  const [dateErr, setDateErr] = useState("");
-  const [billFromAddressErr, setBillFromAddressErr] = useState("");
-  const [billFromCityErr, setBillFromCityErr] = useState("");
-  const [billFromPostCodeErr, setBillFromPostCodeErr] = useState("");
-  const [billFromCountryErr, setBillFromCountryErr] = useState("");
-  const [billToNameErr, setBillToNameErr] = useState("");
-  const [billToEmailErr, setBillToEmailErr] = useState("");
-  const [billToAddressErr, setBillToAddressErr] = useState("");
-  const [billToCityErr, setBillToCityErr] = useState("");
-  const [billToPostCodeErr, setBillToPostCodeErr] = useState("");
-  const [billToCountryErr, setBillToCountryErr] = useState("");
-  const [billToInvoiceDateErr, setBillToInvoiceDateErr] = useState("");
-  const [billToProjectDescErr, setBillToProjectDescErr] = useState("");
-  const [itemNameErr, setItemNameErr] = useState("");
-  const [quantityErr, setQuantityErr] = useState("");
-  const [priceErr, setPriceErr] = useState("");
-
-  //array of forms.
-  const [items, setItems] = useState([]);
-
-  //control discard modal.
-  const [open, setOpen] = useState(false);
 
   //function to create a new form array when clicked.
   function handleAddNewItemClick() {
@@ -89,7 +75,6 @@ export default function CreateInvoice() {
   function handleDelete(index) {
     const newItems = [...items]; //store the forms array in a new variable.
     newItems.splice(index, 1); //delete an array at a specific index.
-
     setItems(newItems);
   }
 
@@ -99,32 +84,8 @@ export default function CreateInvoice() {
 
   //save to draft.
   async function submitDraft() {
-    const newData = {
-      // ...data,
-      bill_from_street_address: billFromAddress,
-      bill_from_city: billFromCity,
-      bill_from_post_code: billFromPostCode,
-      bill_from_country: billFromCountry,
-      bill_to_client_name: billToName,
-      bill_to_client_email: billToEmail,
-      bill_to_street_address: billToAddress,
-      bill_to_city: billToCity,
-      bill_to_post_code: billToPostCode,
-      bill_to_country: billToCountry,
-      bill_to_invoice_date: billToInvoiceDate,
-      bill_to_payment_terms: billToPaymentTerms,
-      bill_to_project_desc: billToProjectDesc,
-    };
-
-    const res = await fetch("http://localhost:8000/api/drafts", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
-
-    const draftData = await res.json();
+    const newData = { ...billFrom, ...billTo };
+    const draftData = await createDraft(newData);
     // console.log(draftData);
 
     if (draftData.status === false) {
@@ -132,86 +93,24 @@ export default function CreateInvoice() {
       toast("Unable to save as Draft!");
     } else {
       toast("Saved as Draft!");
-      setBillFromAddress("");
-      setBillFromCity("");
-      setBillFromPostCode("");
-      setBillFromCountry("");
-      setBillToName("");
-      setBillToEmail("");
-      setBillToAddress("");
-      setBillToCity("");
-      setBillToCountry("");
-      setBillToInvoiceDate("");
-      setBillToProjectDesc("");
+      setBillFrom(defaultBillFrom);
+      setBillTo(defaultBillTo);
     }
   }
 
   //-- insert/create invoices
   async function onSubmit() {
-    //insert billTo and billFrom.
-    const newData = {
-      bill_from_street_address: billFromAddress,
-      bill_from_city: billFromCity,
-      bill_from_post_code: billFromPostCode,
-      bill_from_country: billFromCountry,
-      bill_to_client_name: billToName,
-      bill_to_client_email: billToEmail,
-      bill_to_street_address: billToAddress,
-      bill_to_city: billToCity,
-      bill_to_post_code: billToPostCode,
-      bill_to_country: billToCountry,
-      bill_to_invoice_date: billToInvoiceDate,
-      bill_to_payment_terms: billToPaymentTerms,
-      bill_to_project_desc: billToProjectDesc,
-    };
-
-    const res = await fetch("http://localhost:8000/api/invoices", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
-
-    const invoiceData = await res.json();
+    const newData = { ...billFrom, ...billTo };
+    const invoiceData = await createInvoice(newData);
     console.log(invoiceData);
 
-    //insert item-list.
-    const itemList = {
-      item_name: itemName,
-      quantity: Qty,
-      price: Price,
-      total: Qty * Price,
-    };
-
-    const resList = await fetch("http://localhost:8000/api/item-list", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(itemList),
-    });
-
-    const itemListData = await resList.json();
-    console.log(itemListData);
+    const itemListData = await createItemLists(items);
+    console.log(items);
 
     if (invoiceData.status === false) {
-      setBillToAddressErr(invoiceData.errors.bill_to_street_address);
-      setBillToCityErr(invoiceData.errors.bill_to_city);
-      setBillToPostCodeErr(invoiceData.errors.bill_to_post_code);
-      setBillToCountryErr(invoiceData.errors.bill_to_country);
-      setBillToInvoiceDateErr(invoiceData.errors.bill_to_invoice_date);
-      setBillToProjectDescErr(invoiceData.errors.bill_to_project_desc);
-      setBillFromAddressErr(invoiceData.errors.bill_from_street_address);
-      setBillFromCityErr(invoiceData.errors.bill_from_city);
-      setBillFromPostCodeErr(invoiceData.errors.bill_from_post_code);
-      setBillFromCountryErr(invoiceData.errors.bill_from_country);
-      setBillToNameErr(invoiceData.errors.bill_to_client_name);
-      setBillToEmailErr(invoiceData.errors.bill_to_client_email);
+      toast(invoiceData.error.msg);
     } else if (itemListData.status === false) {
-      setItemNameErr(itemListData.errors.item_name);
-      setQuantityErr(itemListData.errors.quantity);
-      setPriceErr(itemListData.errors.price);
+      toast(itemListData.error.msg);
     } else {
       toast("Invoice created successfully");
       history.push("/");
@@ -221,54 +120,8 @@ export default function CreateInvoice() {
   return (
     <CreateInvoiceContext.Provider
       value={{
-        items,
-        handleAddNewItemClick,
-        handleInputChange,
-        handleDelete,
-        billFromAddress,
-        setBillFromAddress,
-        billFromCity,
-        setBillFromCity,
-        billFromPostCode,
-        setBillFromPostCode,
-        billFromCountry,
-        setBillFromCountry,
-        billToName,
-        setBillToName,
-        billToEmail,
-        setBillToEmail,
-        billToAddress,
-        setBillToAddress,
-        billToCity,
-        setBillToCity,
-        billToPostCode,
-        setBillToPostCode,
-        billToCountry,
-        setBillToCountry,
-        billToInvoiceDate,
-        setBillToInvoiceDate,
-        billToPaymentTerms,
-        setBillToPaymentTerms,
-        billToProjectDesc,
-        setBillToProjectDesc,
         register,
         errors,
-        dateErr,
-        billFromAddressErr,
-        billFromCityErr,
-        billFromPostCodeErr,
-        billFromCountryErr,
-        billToNameErr,
-        billToEmailErr,
-        billToAddressErr,
-        billToCityErr,
-        billToPostCodeErr,
-        billToCountryErr,
-        billToInvoiceDateErr,
-        billToProjectDescErr,
-        itemNameErr,
-        quantityErr,
-        priceErr,
       }}
     >
       <div>
@@ -315,12 +168,12 @@ export default function CreateInvoice() {
                     Item List
                   </div>
                   <div>
-                    <ItemList />
+                    <ItemList items={items} handleDelete={handleDelete} />
                   </div>
                 </div>
 
                 {/* Add New Btn. */}
-                <AddNewItem />
+                <AddNewItem handleAddNewItemClick={handleAddNewItemClick} />
 
                 {/* Other Btns. */}
                 <div className="flex flex-row justify-between pt-8 border-t-2">
