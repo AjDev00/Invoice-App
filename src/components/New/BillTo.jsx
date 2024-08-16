@@ -1,4 +1,10 @@
 export default function BillTo({ register, errors }) {
+  const errorMsg = (error) => {
+    if (error?.type === "required") return `This field is required!`;
+    else if (error?.type === "min") return "Min of 3 characters!";
+    else return "Error";
+  };
+
   return (
     <div>
       <div>
@@ -24,7 +30,6 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
-
           {/* Client Email. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -42,7 +47,6 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
-
           {/* Street Address. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -60,7 +64,6 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
-
           {/* city and post code. */}
           <div className="flex flex-row gap-4">
             {/* city. */}
@@ -99,7 +102,6 @@ export default function BillTo({ register, errors }) {
               )}
             </div>
           </div>
-
           {/* country. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -117,7 +119,6 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
-
           {/* invoice date. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -129,44 +130,33 @@ export default function BillTo({ register, errors }) {
               placeholder="2021-Aug-12"
               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
             />
-            {billToInvoiceDateErr ? (
-              <div className="text-red-500 font-semibold">
-                Must be a valid date!
-              </div>
-            ) : dateErr ? (
-              <div className="text-red-500 font-semibold">{dateErr}</div>
-            ) : (
-              errors.bill_to_invoice_date && (
-                <span className="text-red-500 font-semibold">Pick a date!</span>
-              )
+            {errors.bill_to_invoice_date && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_invoice_date)}
+              </span>
             )}
           </div>
-
           {/* Payment Terms. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
               Payment Terms
             </label>
-            <div
-              onClick={() => setOpenPaymentTerms(!openPaymentTerms)}
-              className="cursor-pointer flex flex-row justify-between border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
-            >
-              <div>{billToPaymentTerms}</div>
-              <div>
-                <img
-                  src={arrowDown}
-                  alt=""
-                  className="w-3 h-2 mt-2 cursor-pointer"
-                />
-              </div>
+            <div>
+              <select
+                {...register("bill_to_payment_terms", { required: true })}
+              >
+                <option>Net 1 Day</option>
+                <option>Net 7 Days</option>
+                <option>Net 30 Days</option>
+              </select>
+              {errors.bill_to_payment_terms && (
+                <span className="text-red-500 font-semibold">
+                  {errorMsg(errors.bill_to_payment_terms)}
+                </span>
+              )}
             </div>
-            <select {...register("bill_to_payment_terms", { required: true })}>
-              <option>Net 1 Day</option>
-              <option>Net 7 Days</option>
-              <option>Net 30 Days</option>
-            </select>
           </div>
-
+          bill_to_invoice_date
           {/* Project Description. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
