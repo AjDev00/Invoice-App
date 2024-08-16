@@ -6,8 +6,11 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { BsExclamationTriangleFill } from "react-icons/bs";
+import { useHistory } from "react-router-dom";
 
 const TCustomModal = ({ open, setOpen }) => {
+  const history = useHistory();
+
   return (
     <div>
       <Dialog open={open} onClose={setOpen} className="relative z-10">
