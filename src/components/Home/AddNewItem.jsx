@@ -1,9 +1,4 @@
-import { useContext, useState } from "react";
-import { BiPlus } from "react-icons/bi";
-import { CreateInvoiceContext } from "../Pages/CreateInvoice";
-
-export default function AddNewItem() {
-  const { handleAddNewItemClick } = useContext(CreateInvoiceContext);
+export default function AddNewItem({ handleAddNewItemClick }) {
   return (
     <div>
       <div
