@@ -11,6 +11,7 @@ import {
   createDraft,
   createInvoice,
   createItemLists,
+  createItemDraft,
 } from "../../services/invoiceServices";
 import AddNewItem from "../Home/AddNewItem";
 
@@ -70,8 +71,31 @@ export default function CreateInvoice() {
     const draftData = await createDraft(data);
     // console.log(draftData);
 
+    // Ensure data.items is correctly structured for backend
+    const itemNames = data.items.map((item) => item.itemName);
+    const quantities = data.items.map((item) => item.Qty);
+    const prices = data.items.map((item) => item.Price);
+    const totals = data.items.map((item) => item.Qty * item.Price);
+
+    // Get and Insert the foreign key.
+    const draftId = draftData.draft_id;
+
+    // Structure everything into one object.
+    const finalData = {
+      draft_id: draftId,
+      item_name: itemNames,
+      quantity: quantities,
+      price: prices,
+      total: totals,
+    };
+
+    //Save item-lists to draft also if included.
+    const itemDraftData = await createItemDraft(data);
+
     if (draftData.status === false) {
       toast("Unable to save as Draft!." || draftData.message);
+    } else if (itemDraftData.status === false) {
+      toast("Unable to save as Draft!." || itemDraftData.message);
     } else {
       toast("Saved as Draft!");
       history.push("/");
@@ -92,8 +116,12 @@ export default function CreateInvoice() {
     const invoiceData = await createInvoice(data);
     console.log("Invoice Data:", invoiceData);
 
+    //Get and Insert the foreign key.
+    const invoiceId = invoiceData.invoice_id;
+
     // Prepare the finalData for item lists creation
     const finalData = {
+      invoice_id: invoiceId,
       item_name: itemNames,
       quantity: quantities,
       price: prices,
