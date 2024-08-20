@@ -69,9 +69,8 @@ export default function CreateInvoice() {
   //save to draft.
   async function submitDraft(data) {
     const draftData = await createDraft(data);
-    // console.log(draftData);
 
-    // Ensure data.items is correctly structured for backend
+    // Ensure data.items is correctly structured for backend.
     const itemNames = data.items.map((item) => item.itemName);
     const quantities = data.items.map((item) => item.Qty);
     const prices = data.items.map((item) => item.Price);
@@ -93,9 +92,9 @@ export default function CreateInvoice() {
     const itemDraftData = await createItemDraft(finalData);
 
     if (draftData.status === false) {
-      toast("Unable to save as Draft!." || draftData.message);
+      toast("Unable to save as Draft!" || draftData.message);
     } else if (itemDraftData.status === false) {
-      toast("Unable to save as Draft!." || itemDraftData.message);
+      toast("Unable to save as Draft!" || itemDraftData.message);
     } else {
       toast("Saved as Draft!");
       history.push("/");
