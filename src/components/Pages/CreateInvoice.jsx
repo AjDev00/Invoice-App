@@ -90,7 +90,7 @@ export default function CreateInvoice() {
     };
 
     //Save item-lists to draft also if included.
-    const itemDraftData = await createItemDraft(data);
+    const itemDraftData = await createItemDraft(finalData);
 
     if (draftData.status === false) {
       toast("Unable to save as Draft!." || draftData.message);
