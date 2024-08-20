@@ -30,6 +30,7 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
+
           {/* Client Email. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -47,6 +48,7 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
+
           {/* Street Address. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -64,6 +66,7 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
+
           {/* city and post code. */}
           <div className="flex flex-row gap-4">
             {/* city. */}
@@ -102,6 +105,7 @@ export default function BillTo({ register, errors }) {
               )}
             </div>
           </div>
+
           {/* country. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -119,6 +123,7 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
+
           {/* invoice date. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -136,6 +141,7 @@ export default function BillTo({ register, errors }) {
               </span>
             )}
           </div>
+
           {/* Payment Terms. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
@@ -144,6 +150,7 @@ export default function BillTo({ register, errors }) {
             <div>
               <select
                 {...register("bill_to_payment_terms", { required: true })}
+                className="w-full border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
               >
                 <option>Net 1 Day</option>
                 <option>Net 7 Days</option>
@@ -156,7 +163,7 @@ export default function BillTo({ register, errors }) {
               )}
             </div>
           </div>
-          bill_to_invoice_date
+
           {/* Project Description. */}
           <div className="flex flex-col gap-2">
             <label htmlFor="" className="text-[#3a15ce]">
