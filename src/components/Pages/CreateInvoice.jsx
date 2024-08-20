@@ -61,6 +61,7 @@ export default function CreateInvoice() {
     name: "items", // watch all items in the form
   });
 
+  //calculate total.
   const calculateTotal = (index) => {
     const item = watchedItems[index];
     return item?.Qty && item?.Price ? item.Qty * item.Price : 0;
