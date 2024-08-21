@@ -43,6 +43,8 @@ export default function CreateInvoice() {
     reset,
     watch,
     control,
+    clearErrors,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: { ...defaultBill },
@@ -69,16 +71,19 @@ export default function CreateInvoice() {
 
   //save to draft.
   async function submitDraft(data) {
-    const draftData = await createDraft(data);
+    clearErrors();
+
+    const draftData = getValues();
+    const sendDraftData = await createDraft(draftData);
 
     // Ensure data.items is correctly structured for backend.
-    const itemNames = data.items.map((item) => item.itemName);
-    const quantities = data.items.map((item) => item.Qty);
-    const prices = data.items.map((item) => item.Price);
-    const totals = data.items.map((item) => item.Qty * item.Price);
+    const itemNames = draftData.items.map((item) => item.itemName);
+    const quantities = draftData.items.map((item) => item.Qty);
+    const prices = draftData.items.map((item) => item.Price);
+    const totals = draftData.items.map((item) => item.Qty * item.Price);
 
     // Get and Insert the foreign key.
-    const draftId = draftData.draft_id;
+    const draftId = sendDraftData.draft_id;
 
     // Structure everything into one object.
     const finalData = {
@@ -92,8 +97,8 @@ export default function CreateInvoice() {
     //Save item-lists to draft also if included.
     const itemDraftData = await createItemDraft(finalData);
 
-    if (draftData.status === false) {
-      toast("Unable to save as Draft!" || draftData.message);
+    if (sendDraftData.status === false) {
+      toast(sendDraftData.message);
     } else if (itemDraftData.status === false) {
       toast("Unable to save as Draft!" || itemDraftData.message);
     } else {
@@ -302,7 +307,7 @@ export default function CreateInvoice() {
                   Discard
                 </div>
                 <div
-                  onClick={handleSubmit(submitDraft)}
+                  onClick={submitDraft}
                   className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
                 >
                   Save as Draft
