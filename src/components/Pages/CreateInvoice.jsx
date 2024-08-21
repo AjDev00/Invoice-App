@@ -157,10 +157,10 @@ export default function CreateInvoice() {
         <div className="px-3 pt-5">
           <div
             onClick={() => history.go(-1)}
-            className="flex flex-row font-open-sans items-center gap-3 pt-2"
+            className="flex flex-row font-open-sans items-center gap-3 pt-2 cursor-pointer"
           >
             <div>
-              <img src={leftArrow} alt="" className="h-4 cursor-pointer" />
+              <img src={leftArrow} alt="" className="h-4" />
             </div>
             <div className="font-bold tracking-wide">Go back</div>
           </div>
