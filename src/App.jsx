@@ -25,9 +25,9 @@ function App() {
             <Route exact path="/">
               <div>
                 <Header />
-                <div className="bg-slate-100 min-h-screen">
+                <div className="bg-slate-100">
                   <DisplayHeader />
-                  <DisplayInvoices />
+                  {/* <DisplayInvoices /> */}
                 </div>
               </div>
             </Route>

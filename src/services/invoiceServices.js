@@ -49,3 +49,17 @@ export async function createItemDraft(data) {
 
   return res.json();
 }
+
+//display all invoices.
+export async function displayInvoices() {
+  const res = await fetch("http://localhost:8000/api/invoices");
+
+  return await res.json();
+}
+
+//display all drafts.
+export async function displayDrafts() {
+  const res = await fetch("http://localhost:8000/api/drafts");
+
+  return await res.json();
+}
