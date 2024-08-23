@@ -3,18 +3,19 @@ import plus from "../../assets/icon-plus.svg";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import DisplayInvoices from "./DisplayInvoices";
 import { displayDrafts, displayInvoices } from "../../services/invoiceServices";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import loadingImg from "../../assets/loading.svg";
 import EmptyInvoice from "./EmptyInvoice";
 import DisplayDrafts from "./DisplayDrafts";
+import { AppContext } from "../../App";
 
 export default function DisplayHeader() {
   //invoice params.
-  const [invoices, setInvoices] = useState("");
+  const { invoices, setInvoices } = useContext(AppContext);
   const [countInvoice, setCountInvoice] = useState("");
 
   //draft params.
-  const [drafts, setDrafts] = useState("");
+  const { drafts, setDrafts } = useContext(AppContext);
   const [countDraft, setCountDraft] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,10 @@ export default function DisplayHeader() {
         <div className="font-bold">
           <div className="text-[24px] tracking-tight">Invoices</div>
           <div className="opacity-65 text-[14px]">
-            {invoices.length === 0 && countInvoice === 0 && countDraft === 0
+            {invoices &&
+            invoices.length === 0 &&
+            countInvoice === 0 &&
+            countDraft === 0
               ? "No Invoices"
               : countInvoice + countDraft + " invoices"}
           </div>
@@ -77,9 +81,10 @@ export default function DisplayHeader() {
             <img src={loadingImg} alt="" className="w-8 animate-spin mt-44" />
           </div>
         )}
-        {invoices.length === 0 && countInvoice === 0 && countDraft === 0 && (
-          <EmptyInvoice />
-        )}
+        {invoices &&
+          invoices.length === 0 &&
+          countInvoice === 0 &&
+          countDraft === 0 && <EmptyInvoice />}
       </div>
 
       {/* //otherwise this.. */}
@@ -93,7 +98,7 @@ export default function DisplayHeader() {
                 </div>
               )}
 
-              <DisplayInvoices invoices={invoices} invoice={invoice} />
+              <DisplayInvoices invoice={invoice} />
             </div>
           );
         })}

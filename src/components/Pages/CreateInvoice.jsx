@@ -1,10 +1,8 @@
 import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BillFrom, BillTo, TCustomModal } from "../New";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import Header from "../Home/Header";
-import leftArrow from "../../assets/icon-arrow-left.svg";
 import { useState } from "react";
 import deleteIcon from "../../assets/icon-delete.svg";
 import {
@@ -14,6 +12,8 @@ import {
   createItemDraft,
 } from "../../services/invoiceServices";
 import AddNewItem from "../Home/AddNewItem";
+import GoBack from "../ReUsable/GoBack";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const defaultBill = {
   bill_from_street_address: "",
@@ -155,15 +155,7 @@ export default function CreateInvoice() {
           <Header />
         </div>
         <div className="px-3 pt-5">
-          <div
-            onClick={() => history.go(-1)}
-            className="flex flex-row font-open-sans items-center gap-3 pt-2 cursor-pointer"
-          >
-            <div>
-              <img src={leftArrow} alt="" className="h-4" />
-            </div>
-            <div className="font-bold tracking-wide">Go back</div>
-          </div>
+          <GoBack />
 
           <div className="pt-10">
             <div className="flex flex-col gap-5">

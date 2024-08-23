@@ -11,21 +11,46 @@ import {
 } from "react-router-dom/cjs/react-router-dom.min";
 import CreateInvoice from "./components/Pages/CreateInvoice";
 import { ToastContainer } from "react-toastify";
+import ViewInvoiceDetails from "./components/View/ViewInvoiceDetails";
+import ViewDraftDetails from "./components/View/ViewDraftDetails";
 
 export const AppContext = createContext();
 
 function App() {
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false); //toggle light and dark mode.
+
+  const [invoices, setInvoices] = useState(""); //general invoice param.
+
+  const [drafts, setDrafts] = useState(""); //general draft param.
+
+  //toggle paid and pending status.
+  const [status, setStatus] = useState(false);
+
+  function handleStatus() {
+    setStatus(true);
+    console.log("clicked");
+  }
 
   return (
-    <AppContext.Provider value={{ toggle, setToggle }}>
+    <AppContext.Provider
+      value={{
+        toggle,
+        setToggle,
+        status,
+        handleStatus,
+        setInvoices,
+        invoices,
+        drafts,
+        setDrafts,
+      }}
+    >
       <div className="App">
         <Router>
           <Switch>
             <Route exact path="/">
               <div>
                 <Header />
-                <div className="bg-slate-100">
+                <div className="bg-slate-100 min-h-screen">
                   <DisplayHeader />
                   {/* <DisplayInvoices /> */}
                 </div>
@@ -33,6 +58,16 @@ function App() {
             </Route>
             <Route path="/create-invoice">
               <CreateInvoice />
+            </Route>
+            <Route path="/invoice-details/:id">
+              <div className="bg-slate-100 min-h-screen">
+                <ViewInvoiceDetails />
+              </div>
+            </Route>
+            <Route path="/draft-details/:id">
+              <div className="bg-slate-100 min-h-screen">
+                <ViewDraftDetails />
+              </div>
             </Route>
           </Switch>
         </Router>

@@ -63,3 +63,10 @@ export async function displayDrafts() {
 
   return await res.json();
 }
+
+//display a single invoice(invoice details).
+// export async function showInvoiceDetails() {
+//   const res = await fetch("http://localhost:8000/api/show-invoice/" + id);
+
+//   return await res.json();
+// }
