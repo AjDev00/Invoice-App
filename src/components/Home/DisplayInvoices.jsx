@@ -5,6 +5,7 @@ import { AppContext } from "../../App";
 
 export default function DisplayInvoices({ invoice }) {
   const { status } = useContext(AppContext);
+
   return (
     <div>
       <div className="px-4 mt-7">

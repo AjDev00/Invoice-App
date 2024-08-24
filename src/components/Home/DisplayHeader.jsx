@@ -88,7 +88,8 @@ export default function DisplayHeader() {
       </div>
 
       {/* //otherwise this.. */}
-      {invoices &&
+      {!loading &&
+        invoices &&
         invoices.map((invoice, index) => {
           return (
             <div key={index}>
@@ -98,12 +99,13 @@ export default function DisplayHeader() {
                 </div>
               )}
 
-              <DisplayInvoices invoice={invoice} />
+              {!loading && <DisplayInvoices invoice={invoice} />}
             </div>
           );
         })}
 
-      {drafts &&
+      {!loading &&
+        drafts &&
         drafts.map((draft, index) => {
           return (
             <div key={index}>

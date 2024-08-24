@@ -9,6 +9,7 @@ import DeleteInvoiceModal from "./DeleteInvoiceModal";
 
 export default function ViewInvoiceDetails() {
   const [open, setOpen] = useState(false); //control delete modal.
+  const [dueDate, setDueDate] = useState(""); //payment due date.
 
   //api params.
   const params = useParams();
@@ -27,7 +28,44 @@ export default function ViewInvoiceDetails() {
     const data = await res.json();
     console.log(data);
     setInvoiceDetails(data.data);
+
+    //calculate payment due date.
+    calculatePaymentDueDate(
+      data.data.bill_to_invoice_date,
+      data.data.bill_to_payment_terms
+    );
     setLoading(false);
+  }
+
+  function calculatePaymentDueDate(invoiceDate, paymentTerm) {
+    const daysToAdd = parseInt(paymentTerm.match(/\d+/)); // Extract number of days from "Net X Days"
+    const dueDate = new Date(invoiceDate); //create an object instance of the invoiceDate in the Date format.
+    dueDate.setDate(dueDate.getDate() + daysToAdd); // Add the extracted number of days to the invoice date
+
+    // Get year, month, and day parts
+    const year = dueDate.getFullYear();
+    const day = dueDate.getDate();
+
+    // Convert month number to month name
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[dueDate.getMonth()]; // getMonth() returns 0-11
+
+    // Format the date in "YYYY-MMM-DD"
+    const formattedDate = `${year}-${month}-${day < 10 ? "0" + day : day}`; // Add leading zero for day if needed
+    setDueDate(formattedDate);
   }
 
   useEffect(() => {
@@ -109,7 +147,8 @@ export default function ViewInvoiceDetails() {
                         Payment Due
                       </div>
                       <div className="font-bold text-[16px] text-nowrap">
-                        20-Sep-2021
+                        {/* {invoiceDetails.bill_to_payment_terms} */}
+                        {dueDate}
                       </div>
                     </div>
                   </div>
@@ -169,13 +208,17 @@ export default function ViewInvoiceDetails() {
                     <div className="text-[14px]">Grand Total</div>
                     <div className="font-semibold text-[20px]">
                       {invoiceDetails.item_list &&
+                        invoiceDetails.item_list.total}
+                      {/* {invoiceDetails.item_list &&
                       invoiceDetails.item_list.length > 1
                         ? invoiceDetails.item_list.map((item, index) => (
-                            <div key={index}>{"£ " + item.total + ".00"}</div>
+                            <div key={index}>
+                              {"£ " + item.total + item.total + ".00"}
+                            </div>
                           ))
                         : invoiceDetails.item_list.map((item, index) => (
                             <div key={index}>{"£ " + item.total + ".00"}</div>
-                          ))}
+                          ))} */}
                     </div>
                   </div>
                 </div>
