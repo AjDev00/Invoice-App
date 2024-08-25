@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-// import Pending from "../ReUsable/Pending";
-import { useContext } from "react";
-import { AppContext } from "../../App";
+import Pending from "../ReUsable/Pending";
 
 export default function DisplayInvoices({ invoice }) {
-  const { status } = useContext(AppContext);
-
   return (
     <div>
       <div className="px-4 mt-7">
@@ -25,32 +21,25 @@ export default function DisplayInvoices({ invoice }) {
             <div className="mt-5 flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="opacity-80 text-[#7C5DFA]">
-                  {"Due " + invoice.bill_to_invoice_date}
+                  {invoice.bill_to_invoice_date}
                 </div>
-                <div className="font-bold text-[20px]">
-                  {invoice.item_list &&
-                    invoice.item_list.map((item, index) => (
-                      <div key={index}>{"£ " + item.total + ".00"}</div>
-                    ))}
+                <div className="font-bold text-[20px] flex flex-row gap-1">
+                  <div>£</div>
+                  <div className="flex flex-row">
+                    <div>
+                      {invoice.item_list && invoice.item_list.length > 0
+                        ? invoice.item_list.reduce((sum, item) => {
+                            return sum + parseFloat(item.total);
+                          }, 0)
+                        : ""}
+                    </div>
+                    <div>.00</div>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center">
                 <div>
-                  {!status ? (
-                    <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center px-4 p-3 bg-orange-50">
-                      <div className="border border-transparent rounded-full bg-[#f59366d7] p-1 h-2 animate-pulse"></div>
-                      <div className="text-[#f59366d7] font-bold tracking-wide">
-                        Pending
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center px-4 p-3 bg-green-50">
-                      <div className="border border-transparent rounded-full bg-green-500 p-1 h-2 animate-pulse"></div>
-                      <div className="text-green-500 font-bold tracking-wide">
-                        Paid
-                      </div>
-                    </div>
-                  )}
+                  <Pending invoiceId={invoice.id} />
                 </div>
               </div>
             </div>

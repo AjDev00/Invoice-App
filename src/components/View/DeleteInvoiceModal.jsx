@@ -60,11 +60,11 @@ const DeleteInvoiceModal = ({ open, setOpen, invoiceDetails, invoices }) => {
                       as="h3"
                       className="text-base font-semibold leading-6 text-gray-900"
                     >
-                      Discard Invoice
+                      Confirm Deletion
                     </DialogTitle>
                     <div className="mt-2">
                       <div className="text-sm text-gray-500">
-                        Are you sure you want to discard this invoice? <br />{" "}
+                        Are you sure you want to delete this invoice? <br />{" "}
                         <div className="flex flex-row">
                           <div className="font-bold flex flex-row">
                             <span className="text-[#7C5DFA]">#</span>

@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { AppContext } from "../../App";
 
-export default function Pending() {
-  const { status } = useContext(AppContext);
+export default function Pending({ invoiceId }) {
+  const { invoiceStatuses } = useContext(AppContext);
+  const status = invoiceStatuses[invoiceId];
 
   return (
     <div>

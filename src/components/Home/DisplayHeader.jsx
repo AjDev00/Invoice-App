@@ -27,6 +27,7 @@ export default function DisplayHeader() {
     console.log(data);
     setInvoices(data.data);
     setCountInvoice(data.total_count);
+
     setLoading(false);
   }
 

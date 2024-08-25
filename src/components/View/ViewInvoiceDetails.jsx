@@ -16,8 +16,13 @@ export default function ViewInvoiceDetails() {
   const [invoiceDetails, setInvoiceDetails] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  //change status.
-  const { handleStatus, status } = useContext(AppContext);
+  //change status(pending & paid).
+  const { invoiceStatuses, handleStatus, invoices } = useContext(AppContext);
+  const { id } = useParams(); // Get invoice ID from URL parameters.
+  const invoiceId = parseInt(id, 10); // Convert to integer if necessary(base 10).
+
+  // Find the invoice based on ID.
+  const invoice = invoices.find((inv) => inv.id === invoiceId);
 
   //display invoice details(api integration).
   async function viewInvoiceDetails() {
@@ -34,6 +39,7 @@ export default function ViewInvoiceDetails() {
       data.data.bill_to_invoice_date,
       data.data.bill_to_payment_terms
     );
+
     setLoading(false);
   }
 
@@ -92,23 +98,7 @@ export default function ViewInvoiceDetails() {
                 <div className="opacity-80 text-[#7C5DFA] font-semibold">
                   Status
                 </div>
-                <div>
-                  {!status ? (
-                    <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center px-4 p-3 bg-orange-50">
-                      <div className="border border-transparent rounded-full bg-[#f59366d7] p-1 h-2 animate-pulse"></div>
-                      <div className="text-[#f59366d7] font-bold tracking-wide">
-                        Pending
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center px-4 p-3 bg-green-50">
-                      <div className="border border-transparent rounded-full bg-green-500 p-1 h-2 animate-pulse"></div>
-                      <div className="text-green-500 font-bold tracking-wide">
-                        Paid
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Pending invoiceId={invoiceId} />
               </div>
             </div>
             <div className="px-7 mt-5">
@@ -206,19 +196,19 @@ export default function ViewInvoiceDetails() {
                 <div className="border border-transparent bg-[#373B53] text-white p-6 rounded-bl-lg rounded-br-lg">
                   <div className="flex flex-row justify-between items-center">
                     <div className="text-[14px]">Grand Total</div>
-                    <div className="font-semibold text-[20px]">
-                      {invoiceDetails.item_list &&
-                        invoiceDetails.item_list.total}
-                      {/* {invoiceDetails.item_list &&
-                      invoiceDetails.item_list.length > 1
-                        ? invoiceDetails.item_list.map((item, index) => (
-                            <div key={index}>
-                              {"£ " + item.total + item.total + ".00"}
-                            </div>
-                          ))
-                        : invoiceDetails.item_list.map((item, index) => (
-                            <div key={index}>{"£ " + item.total + ".00"}</div>
-                          ))} */}
+                    <div className="font-bold text-[20px] flex flex-row gap-1">
+                      <div>£</div>
+                      <div className="flex flex-row">
+                        <div>
+                          {invoiceDetails.item_list &&
+                          invoiceDetails.item_list.length > 0
+                            ? invoiceDetails.item_list.reduce((sum, item) => {
+                                return sum + parseFloat(item.total);
+                              }, 0)
+                            : ""}
+                        </div>
+                        <div>.00</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -238,10 +228,10 @@ export default function ViewInvoiceDetails() {
               Delete
             </div>
             <div
-              onClick={handleStatus}
+              onClick={() => handleStatus(invoiceId)}
               className="border border-transparent text-[#ffff] bg-blue-500 rounded-full p-3 font-bold px-5 cursor-pointer"
             >
-              Mark as Paid
+              {invoiceStatuses[invoiceId] ? "Pending" : "Mark as Paid"}
             </div>
           </div>
         )}

@@ -21,13 +21,20 @@ export default function DisplayDrafts({ draft }) {
             <div className="mt-5 flex flex-row justify-between">
               <div className="flex flex-col gap-2">
                 <div className="opacity-80 text-[#7C5DFA]">
-                  {"Due " + draft.bill_to_invoice_date}
+                  {draft.bill_to_invoice_date}
                 </div>
-                <div className="font-bold text-[20px]">
-                  {draft.draft_item &&
-                    draft.draft_item.map((item, index) => (
-                      <div key={index}>{"£ " + item.total + ".00"}</div>
-                    ))}
+                <div className="font-bold text-[20px] flex flex-row gap-1">
+                  <div>£</div>
+                  <div className="flex flex-row">
+                    <div>
+                      {draft.draft_item && draft.draft_item.length > 0
+                        ? draft.draft_item.reduce((sum, item) => {
+                            return sum + parseFloat(item.total);
+                          }, 0)
+                        : ""}
+                    </div>
+                    <div>.00</div>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-row gap-2 rounded-lg border border-transparent justify-center items-center bg-slate-100">

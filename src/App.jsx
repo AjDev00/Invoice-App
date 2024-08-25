@@ -19,16 +19,18 @@ export const AppContext = createContext();
 function App() {
   const [toggle, setToggle] = useState(false); //toggle light and dark mode.
 
-  const [invoices, setInvoices] = useState(""); //general invoice param.
+  const [invoices, setInvoices] = useState([]); //general invoice param.
 
-  const [drafts, setDrafts] = useState(""); //general draft param.
+  const [drafts, setDrafts] = useState([]); //general draft param.
 
   //toggle paid and pending status.
-  const [status, setStatus] = useState(false);
+  const [invoiceStatuses, setInvoiceStatuses] = useState({});
 
-  function handleStatus() {
-    setStatus(true);
-    console.log("clicked");
+  function handleStatus(invoiceId) {
+    setInvoiceStatuses((prevStatuses) => ({
+      ...prevStatuses, //remember the previous status.
+      [invoiceId]: !prevStatuses[invoiceId], // Toggle the status.
+    }));
   }
 
   return (
@@ -36,7 +38,7 @@ function App() {
       value={{
         toggle,
         setToggle,
-        status,
+        invoiceStatuses,
         handleStatus,
         setInvoices,
         invoices,

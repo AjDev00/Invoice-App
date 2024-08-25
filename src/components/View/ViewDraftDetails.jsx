@@ -1,13 +1,14 @@
 import GoBack from "../ReUsable/GoBack";
 import Header from "../Home/Header";
-import Pending from "../ReUsable/Pending";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useEffect, useState } from "react";
 import loadingImg from "../../assets/loading.svg";
 import DeleteDraftModal from "./DeleteDraftModal";
+import Draft from "../ReUsable/Draft";
 
 export default function ViewDraftDetails() {
   const [open, setOpen] = useState(false); //control delete modal.
+  const [dueDate, setDueDate] = useState(""); //payment due date.
 
   //api params.
   const params = useParams();
@@ -23,7 +24,45 @@ export default function ViewDraftDetails() {
     const data = await res.json();
     console.log(data);
     setDraftDetails(data.data);
+
+    //calculate payment due.
+    calculatePaymentDueDate(
+      data.data.bill_to_invoice_date,
+      data.data.bill_to_payment_terms
+    );
+
     setLoading(false);
+  }
+
+  function calculatePaymentDueDate(invoiceDate, paymentTerm) {
+    const daysToAdd = parseInt(paymentTerm.match(/\d+/)); // Extract number of days from "Net X Days"
+    const dueDate = new Date(invoiceDate); //create an object instance of the invoiceDate in the Date format.
+    dueDate.setDate(dueDate.getDate() + daysToAdd); // Add the extracted number of days to the invoice date
+
+    // Get year, month, and day parts
+    const year = dueDate.getFullYear();
+    const day = dueDate.getDate();
+
+    // Convert month number to month name
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[dueDate.getMonth()]; // getMonth() returns 0-11
+
+    // Format the date in "YYYY-MMM-DD"
+    const formattedDate = `${year}-${month}-${day < 10 ? "0" + day : day}`; // Add leading zero for day if needed
+    setDueDate(formattedDate);
   }
 
   useEffect(() => {
@@ -51,7 +90,7 @@ export default function ViewDraftDetails() {
                   Status
                 </div>
                 <div className="">
-                  <Pending />
+                  <Draft />
                 </div>
               </div>
             </div>
@@ -91,7 +130,7 @@ export default function ViewDraftDetails() {
                         Payment Due
                       </div>
                       <div className="font-bold text-[16px] text-nowrap">
-                        20-Sep-2021
+                        {dueDate}
                       </div>
                     </div>
                   </div>
@@ -149,7 +188,20 @@ export default function ViewDraftDetails() {
                 <div className="border border-transparent bg-[#373B53] text-white p-6 rounded-bl-lg rounded-br-lg">
                   <div className="flex flex-row justify-between items-center">
                     <div className="text-[14px]">Grand Total</div>
-                    <div className="font-semibold text-[20px]">£ 556.00</div>
+                    <div className="font-bold text-[20px] flex flex-row gap-1">
+                      <div>£</div>
+                      <div className="flex flex-row">
+                        <div>
+                          {draftDetails.draft_item &&
+                          draftDetails.draft_item.length > 0
+                            ? draftDetails.draft_item.reduce((sum, draft) => {
+                                return sum + parseFloat(draft.total);
+                              }, 0)
+                            : ""}
+                        </div>
+                        <div>.00</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -157,7 +209,7 @@ export default function ViewDraftDetails() {
           </div>
         )}
         {!loading && (
-          <div className="flex flex-row justify-between border border-white bg-white mt-14 py-4 px-4">
+          <div className="flex flex-row justify-between border border-white bg-white mt-14 py-4 px-7">
             <div className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-3 bg-opacity-30 font-bold px-5 cursor-pointer">
               Edit
             </div>
