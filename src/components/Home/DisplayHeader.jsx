@@ -14,7 +14,7 @@ export default function DisplayHeader() {
   const [filter, setFilter] = useState(false);
 
   //invoice params.
-  const { invoices, setInvoices } = useContext(AppContext);
+  const { invoices, setInvoices, invoiceStatuses } = useContext(AppContext);
   const [countInvoice, setCountInvoice] = useState("");
 
   //draft params.
@@ -65,7 +65,7 @@ export default function DisplayHeader() {
         <div className="flex flex-row gap-2">
           <div
             onClick={() => setFilter(!filter)}
-            className="flex flex-row justify-center items-center gap-2"
+            className="flex flex-row justify-center items-center gap-2 cursor-pointer"
           >
             <div className="font-bold text-[18px] tracking-wide">Filter</div>
             <img src={arrowDown} alt="" className="w-3 h-2" />
