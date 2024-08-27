@@ -8,8 +8,11 @@ import loadingImg from "../../assets/loading.svg";
 import EmptyInvoice from "./EmptyInvoice";
 import DisplayDrafts from "./DisplayDrafts";
 import { AppContext } from "../../App";
+import Filter from "./Filter";
 
 export default function DisplayHeader() {
+  const [filter, setFilter] = useState(false);
+
   //invoice params.
   const { invoices, setInvoices } = useContext(AppContext);
   const [countInvoice, setCountInvoice] = useState("");
@@ -60,7 +63,10 @@ export default function DisplayHeader() {
           </div>
         </div>
         <div className="flex flex-row gap-2">
-          <div className="flex flex-row justify-center items-center gap-2">
+          <div
+            onClick={() => setFilter(!filter)}
+            className="flex flex-row justify-center items-center gap-2"
+          >
             <div className="font-bold text-[18px] tracking-wide">Filter</div>
             <img src={arrowDown} alt="" className="w-3 h-2" />
           </div>
@@ -74,6 +80,8 @@ export default function DisplayHeader() {
           </Link>
         </div>
       </div>
+
+      <Filter filter={filter} />
 
       {/* display this if no invoice has been created. */}
       <div className="">

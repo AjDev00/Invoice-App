@@ -13,6 +13,7 @@ import CreateInvoice from "./components/Pages/CreateInvoice";
 import { ToastContainer } from "react-toastify";
 import ViewInvoiceDetails from "./components/View/ViewInvoiceDetails";
 import ViewDraftDetails from "./components/View/ViewDraftDetails";
+import EditInvoice from "./components/Pages/EditInvoice";
 
 export const AppContext = createContext();
 
@@ -70,6 +71,9 @@ function App() {
               <div className="bg-slate-100 min-h-screen">
                 <ViewDraftDetails />
               </div>
+            </Route>
+            <Route path="/edit-invoice/:id">
+              <EditInvoice />
             </Route>
           </Switch>
         </Router>

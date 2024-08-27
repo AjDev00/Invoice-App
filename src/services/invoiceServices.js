@@ -64,9 +64,15 @@ export async function displayDrafts() {
   return await res.json();
 }
 
-//display a single invoice(invoice details).
-// export async function showInvoiceDetails() {
-//   const res = await fetch("http://localhost:8000/api/show-invoice/" + id);
+//update a single invoice.
+export async function updateInvoice(data, id) {
+  const res = await fetch("http://localhost:8000/api/edit-invoice/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-//   return await res.json();
-// }
+  return res.json();
+}

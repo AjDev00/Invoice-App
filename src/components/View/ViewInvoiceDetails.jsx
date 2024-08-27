@@ -1,7 +1,7 @@
 import GoBack from "../ReUsable/GoBack";
 import Header from "../Home/Header";
 import Pending from "../ReUsable/Pending";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { Link, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useContext, useEffect, useState } from "react";
 import loadingImg from "../../assets/loading.svg";
 import { AppContext } from "../../App";
@@ -218,9 +218,11 @@ export default function ViewInvoiceDetails() {
         )}
         {!loading && (
           <div className="flex flex-row justify-between border border-white bg-white mt-14 py-6 px-4">
-            <div className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-3 bg-opacity-30 font-bold px-5 cursor-pointer">
-              Edit
-            </div>
+            <Link to={`/edit-invoice/${invoiceDetails.id}`}>
+              <div className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-3 bg-opacity-30 font-bold px-5 cursor-pointer">
+                Edit
+              </div>
+            </Link>
             <div
               onClick={() => setOpen(true)}
               className="border border-transparent text-[#ffff] bg-red-500 rounded-full p-3 font-bold px-5 cursor-pointer"

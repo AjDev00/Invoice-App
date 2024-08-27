@@ -8,7 +8,7 @@ export default function GoBack() {
     <div>
       <div>
         <div
-          onClick={() => history.push("/")}
+          onClick={() => history.go(-1)}
           className="flex flex-row font-open-sans items-center gap-3 pt-2 cursor-pointer"
         >
           <div>
