@@ -72,11 +72,9 @@ export default function EditInvoice() {
   //   return item?.Qty && item?.Price ? item.Qty * item.Price : 0;
   // };
 
-  //-- insert/create invoices
+  //-- updating invoices
   async function onSubmit(data) {
-    console.log("Original Data:", data);
-
-    // Ensure data.items is correctly structured for backend
+    // ensure data.items is correctly structured for backend
     const itemNames = data.items.map((item) => item.itemName);
     const quantities = data.items.map((item) => item.Qty);
     const prices = data.items.map((item) => item.Price);
@@ -98,9 +96,7 @@ export default function EditInvoice() {
       total: totals,
     };
 
-    console.log("Final Data Sent to createItemLists:", finalData);
-
-    // Send data for item list creation
+    // Send data for item list updating.
     const itemListData = await updateItemList(finalData, params.id);
 
     if (invoiceData.status === false) {
