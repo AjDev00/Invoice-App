@@ -57,9 +57,23 @@ export async function displayInvoices() {
   return await res.json();
 }
 
+//display a single invoice.
+export async function viewInvoiceDetails(id) {
+  const res = await fetch("http://localhost:8000/api/show-invoice/" + id);
+
+  return await res.json();
+}
+
 //display all drafts.
 export async function displayDrafts() {
   const res = await fetch("http://localhost:8000/api/drafts");
+
+  return await res.json();
+}
+
+//display a single drafts.
+export async function viewDraftDetails(id) {
+  const res = await fetch("http://localhost:8000/api/show-drafts/" + id);
 
   return await res.json();
 }
@@ -75,4 +89,31 @@ export async function updateInvoice(data, id) {
   });
 
   return res.json();
+}
+
+//update item-list.
+export async function updateItemList(data, id) {
+  const res = await fetch("http://localhost:8000/api/edit-item/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+//get invoice data.
+export async function getInvoiceById(id) {
+  const res = await fetch("http://localhost:8000/api/show-invoice/" + id);
+
+  return await res.json();
+}
+
+//get item-list data.
+export async function getItemListById(id) {
+  const res = await fetch("http://localhost:8000/api/get-item-list/" + id);
+
+  return await res.json();
 }

@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import loadingImg from "../../assets/loading.svg";
 import { AppContext } from "../../App";
 import DeleteInvoiceModal from "./DeleteInvoiceModal";
+import { viewInvoiceDetails } from "../../services/invoiceServices";
 
 export default function ViewInvoiceDetails() {
   const [open, setOpen] = useState(false); //control delete modal.
@@ -25,19 +26,16 @@ export default function ViewInvoiceDetails() {
   const invoice = invoices.find((inv) => inv.id === invoiceId);
 
   //display invoice details(api integration).
-  async function viewInvoiceDetails() {
-    const res = await fetch(
-      "http://localhost:8000/api/show-invoice/" + params.id
-    );
+  async function showInvoiceDetails(id) {
+    const singleInvoice = await viewInvoiceDetails(id);
 
-    const data = await res.json();
-    console.log(data);
-    setInvoiceDetails(data.data);
+    console.log(singleInvoice);
+    setInvoiceDetails(singleInvoice.data);
 
     //calculate payment due date.
     calculatePaymentDueDate(
-      data.data.bill_to_invoice_date,
-      data.data.bill_to_payment_terms
+      singleInvoice.data.bill_to_invoice_date,
+      singleInvoice.data.bill_to_payment_terms
     );
 
     setLoading(false);
@@ -75,7 +73,7 @@ export default function ViewInvoiceDetails() {
   }
 
   useEffect(() => {
-    viewInvoiceDetails();
+    showInvoiceDetails(params.id);
   }, []);
 
   return (

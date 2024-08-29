@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import loadingImg from "../../assets/loading.svg";
 import DeleteDraftModal from "./DeleteDraftModal";
 import Draft from "../ReUsable/Draft";
+import { viewDraftDetails } from "../../services/invoiceServices";
 
 export default function ViewDraftDetails() {
   const [open, setOpen] = useState(false); //control delete modal.
@@ -16,19 +17,16 @@ export default function ViewDraftDetails() {
   const [loading, setLoading] = useState(true);
 
   //display draft details(api integration).
-  async function viewDraftDetails() {
-    const res = await fetch(
-      "http://localhost:8000/api/show-drafts/" + params.id
-    );
+  async function showDraftDetails(id) {
+    const singleDraft = await viewDraftDetails(id);
 
-    const data = await res.json();
-    console.log(data);
-    setDraftDetails(data.data);
+    console.log(singleDraft);
+    setDraftDetails(singleDraft.data);
 
     //calculate payment due.
     calculatePaymentDueDate(
-      data.data.bill_to_invoice_date,
-      data.data.bill_to_payment_terms
+      singleDraft.data.bill_to_invoice_date,
+      singleDraft.data.bill_to_payment_terms
     );
 
     setLoading(false);
@@ -66,7 +64,7 @@ export default function ViewDraftDetails() {
   }
 
   useEffect(() => {
-    viewDraftDetails();
+    showDraftDetails(params.id);
   }, []);
 
   return (

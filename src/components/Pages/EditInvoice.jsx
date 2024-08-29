@@ -6,11 +6,10 @@ import Header from "../Home/Header";
 import { useContext, useEffect, useState } from "react";
 import deleteIcon from "../../assets/icon-delete.svg";
 import {
-  createDraft,
-  createInvoice,
-  createItemLists,
-  createItemDraft,
   updateInvoice,
+  getInvoiceById,
+  getItemListById,
+  updateItemList,
 } from "../../services/invoiceServices";
 import AddNewItem from "../Home/AddNewItem";
 import GoBack from "../ReUsable/GoBack";
@@ -18,7 +17,6 @@ import {
   useHistory,
   useParams,
 } from "react-router-dom/cjs/react-router-dom.min";
-import { AppContext } from "../../App";
 
 const defaultBill = {
   bill_from_street_address: "",
@@ -60,7 +58,6 @@ export default function EditInvoice() {
   const { fields, append, remove } = useFieldArray({
     control, // name of the array in defaultValues
     name: "items", // name of the item in the defaultValue  => defaultBill
-    rules: { minLength: 1 },
   });
 
   //useWatch
@@ -70,107 +67,73 @@ export default function EditInvoice() {
   });
 
   //calculate total.
-  const calculateTotal = (index) => {
-    const item = watchedItems[index];
-    return item?.Qty && item?.Price ? item.Qty * item.Price : 0;
-  };
-
-  //save to draft.
-  //   async function submitDraft(data) {
-  //     clearErrors();
-
-  //     const draftData = getValues();
-  //     const sendDraftData = await createDraft(draftData);
-
-  //     // Ensure data.items is correctly structured for backend.
-  //     const itemNames = draftData.items.map((item) => item.itemName);
-  //     const quantities = draftData.items.map((item) => item.Qty);
-  //     const prices = draftData.items.map((item) => item.Price);
-  //     const totals = draftData.items.map((item) => item.Qty * item.Price);
-
-  //     // Get and Insert the foreign key.
-  //     const draftId = sendDraftData.draft_id;
-
-  //     // Structure everything into one object.
-  //     const finalData = {
-  //       draft_id: draftId,
-  //       item_name: itemNames,
-  //       quantity: quantities,
-  //       price: prices,
-  //       total: totals,
-  //     };
-
-  //     //Save item-lists to draft also if included.
-  //     const itemDraftData = await createItemDraft(finalData);
-
-  //     if (sendDraftData.status === false) {
-  //       toast(sendDraftData.message);
-  //     } else if (itemDraftData.status === false) {
-  //       toast("Unable to save as Draft!" || itemDraftData.message);
-  //     } else {
-  //       toast("Saved as Draft!");
-  //       history.push("/");
-  //     }
-  //   }
+  // const calculateTotal = (index) => {
+  //   const item = watchedItems[index];
+  //   return item?.Qty && item?.Price ? item.Qty * item.Price : 0;
+  // };
 
   //-- insert/create invoices
   async function onSubmit(data) {
-    // console.log("Original Data:", data);
+    console.log("Original Data:", data);
 
-    // // Ensure data.items is correctly structured for backend
-    // const itemNames = data.items.map((item) => item.itemName);
-    // const quantities = data.items.map((item) => item.Qty);
-    // const prices = data.items.map((item) => item.Price);
-    // const totals = data.items.map((item) => item.Qty * item.Price);
+    // Ensure data.items is correctly structured for backend
+    const itemNames = data.items.map((item) => item.itemName);
+    const quantities = data.items.map((item) => item.Qty);
+    const prices = data.items.map((item) => item.Price);
+    const totals = data.items.map((item) => item.Qty * item.Price);
 
     // Send data for invoice updating.
     const invoiceData = await updateInvoice(data, params.id);
     console.log("Invoice Data:", invoiceData);
 
     //Get and Insert the foreign key.
-    // const invoiceId = invoiceData.invoice_id;
+    const invoiceId = invoiceData.invoice_id;
 
-    // // Prepare the finalData for item lists creation
-    // const finalData = {
-    //   invoice_id: invoiceId,
-    //   item_name: itemNames,
-    //   quantity: quantities,
-    //   price: prices,
-    //   total: totals,
-    // };
+    // Prepare the finalData for item lists creation
+    const finalData = {
+      invoice_id: invoiceId,
+      item_name: itemNames,
+      quantity: quantities,
+      price: prices,
+      total: totals,
+    };
 
-    // console.log("Final Data Sent to createItemLists:", finalData);
+    console.log("Final Data Sent to createItemLists:", finalData);
 
-    // // Send data for item list creation
-    // const itemListData = await createItemLists(finalData);
+    // Send data for item list creation
+    const itemListData = await updateItemList(finalData, params.id);
 
     if (invoiceData.status === false) {
       toast(invoiceData.message);
+    } else if (itemListData.status === false) {
+      toast(itemListData.message);
     } else {
       toast("Invoice updated successfully");
       history.push("/");
     }
-    // else if (itemListData.status === false) {
-    //   toast(itemListData.message);
-    // } else {
-    //   toast("Invoice created successfully");
-    //   history.push("/");
-    // }
   }
 
-  async function updateBlog() {
-    const update = await updateInvoice(data, params.id);
-    // const data = await res.json();
+  //fetch invoice data and populate form.
+  async function fetchInvoiceData(invoiceId) {
+    const res = await getInvoiceById(invoiceId);
 
-    // setBlog(data.data);
-    // setDesc(data.data.description);
-    // setLoading(false);
-    reset(update.data);
+    reset(res.data);
+  }
+
+  //fetch item-list data and populate form.
+  async function fetchItemListData(itemListId) {
+    const res = await getItemListById(itemListId);
+
+    console.log("Fetched Data:", res.data);
+    reset({
+      items: res.data,
+    });
   }
 
   useEffect(() => {
-    updateBlog();
-  }, []);
+    fetchInvoiceData(params.id);
+    fetchItemListData(params.id);
+  }, [params.id]);
 
   return (
     <div>
@@ -225,6 +188,7 @@ export default function EditInvoice() {
                               {...register(`items.${index}.itemName`, {
                                 required: true,
                               })}
+                              defaultValue={item.itemName}
                               placeholder="Banner Design"
                               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                             />
@@ -244,6 +208,7 @@ export default function EditInvoice() {
                                 </label>
                                 <input
                                   type="number"
+                                  defaultValue={item.Qty}
                                   placeholder="1"
                                   {...register(`items.${index}.Qty`, {
                                     required: true,
@@ -264,6 +229,7 @@ export default function EditInvoice() {
                                 </label>
                                 <input
                                   type="number"
+                                  defaultValue={item.Price}
                                   placeholder="156.00"
                                   {...register(`items.${index}.Price`, {
                                     required: true,
@@ -286,7 +252,7 @@ export default function EditInvoice() {
                                   Total
                                 </label>
                                 <span className="font-extrabold text-[#7C5DFA] opacity-70">
-                                  {calculateTotal(index).toFixed(2)}
+                                  {/* {calculateTotal(index).toFixed(2)} */}
                                 </span>
                               </div>
                             </div>
@@ -322,12 +288,6 @@ export default function EditInvoice() {
                 >
                   Discard
                 </div>
-                {/* <div
-                  onClick={submitDraft}
-                  className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
-                >
-                  Save as Draft
-                </div> */}
                 <button
                   type="submit"
                   className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer"
