@@ -3,14 +3,18 @@ import { toast } from "react-toastify";
 import { BillFrom, BillTo, TCustomModal } from "../New";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import Header from "../Home/Header";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import deleteIcon from "../../assets/icon-delete.svg";
 import {
-  updateInvoice,
-  getInvoiceById,
-  getItemListById,
-  updateItemList,
-  //deleteItemList,
+  createDraft,
+  createInvoice,
+  createItemLists,
+  createItemDraft,
+  deleteDraft,
+  viewDraftDetails,
+  getDraftItemById,
+  updateDraft,
+  updateDraftItem,
 } from "../../services/invoiceServices";
 import AddNewItem from "../Home/AddNewItem";
 import GoBack from "../ReUsable/GoBack";
@@ -37,7 +41,7 @@ const defaultBill = {
   item_list: [{ item_name: "", quantity: 1, price: 0 }],
 };
 
-export default function EditInvoice() {
+export default function EditDraft() {
   const [open, setOpen] = useState(false); //control discard modal.
   const [loading, setLoading] = useState(true);
   const history = useHistory();
@@ -61,6 +65,7 @@ export default function EditInvoice() {
   const { fields, append, remove } = useFieldArray({
     control, // name of the array in defaultValues
     name: "item_list", // name of the item in the defaultValue  => defaultBill
+    rules: { minLength: 1 },
   });
 
   //useWatch
@@ -75,16 +80,58 @@ export default function EditInvoice() {
     return item?.quantity && item?.price ? item.quantity * item.price : 0;
   };
 
-  //-- updating invoices
+  //save as draft.
+  async function submitDraft() {
+    clearErrors();
+
+    const draftData = getValues();
+    const sendDraftData = await updateDraft(draftData, params.id);
+
+    // Ensure data.items is correctly structured for backend.
+    const itemNames = draftData.item_list.map((item) => item.item_name);
+    const quantities = draftData.item_list.map((item) => item.quantity);
+    const prices = draftData.item_list.map((item) => item.price);
+    const totals = draftData.item_list.map(
+      (item) => item.quantity * item.price
+    );
+
+    // Get and Insert the foreign key.
+    const draftId = sendDraftData.draft_id;
+
+    // Structure everything into one object.
+    const finalData = {
+      draft_id: draftId,
+      item_name: itemNames,
+      quantity: quantities,
+      price: prices,
+      total: totals,
+    };
+
+    //Save item-lists to draft also if included.
+    const itemDraftData = await updateDraftItem(finalData, params.id);
+
+    if (sendDraftData.status === false) {
+      toast(sendDraftData.message);
+    } else if (itemDraftData.status === false) {
+      toast("Unable to update Draft!");
+    } else {
+      toast("Draft Update!");
+      history.push("/");
+    }
+  }
+
+  //-- save draft as invoices
   async function onSubmit(data) {
-    // ensure data.items is correctly structured for backend
+    console.log("Original Data:", data);
+
+    // Ensure data.items is correctly structured for backend
     const itemNames = data.item_list.map((item) => item.item_name);
     const quantities = data.item_list.map((item) => item.quantity);
     const prices = data.item_list.map((item) => item.price);
     const totals = data.item_list.map((item) => item.quantity * item.price);
 
-    // Send data for invoice updating.
-    const invoiceData = await updateInvoice(data, params.id);
+    // Send data for invoice creation
+    const invoiceData = await createInvoice(data);
     console.log("Invoice Data:", invoiceData);
 
     //Get and Insert the foreign key.
@@ -99,34 +146,33 @@ export default function EditInvoice() {
       total: totals,
     };
 
-    // Send data for item list updating.
-    const itemListData = await updateItemList(finalData, params.id);
+    console.log("Final Data Sent to createItemLists:", finalData);
+
+    // Send data for item list creation
+    const itemListData = await createItemLists(finalData);
+
+    // Delete data from drafts table.
+    const eraseDraft = await deleteDraft(params.id);
 
     if (invoiceData.status === false) {
       toast(invoiceData.message);
     } else if (itemListData.status === false) {
       toast(itemListData.message);
+    } else if (eraseDraft.status === false) {
+      toast("Unable to save as Invoice");
     } else {
-      toast("Invoice updated successfully");
+      toast("Saved as Invoice");
       history.push("/");
     }
   }
 
-  // async function deleteItem(id) {
-  //   const deleteItem = await deleteItemList(id);
-
-  //   if (deleteItem.status === true) {
-  //     toast("Erased");
-  //   }
-  // }
-
-  //fetch invoice and item-list data to populate form.
-  async function fetchInvoiceData(invoiceId, itemListId) {
-    const invoiceRes = await getInvoiceById(invoiceId);
-    const itemRes = await getItemListById(itemListId);
+  //fetch draft and draft_item data to populate form.
+  async function fetchDraftData(draftId, draftItemId) {
+    const draftRes = await viewDraftDetails(draftId);
+    const itemRes = await getDraftItemById(draftItemId);
 
     const data = {
-      ...invoiceRes.data,
+      ...draftRes.data,
       item_list: itemRes.data,
     };
     // const itemId = itemRes.data.id;
@@ -137,7 +183,7 @@ export default function EditInvoice() {
   }
 
   useEffect(() => {
-    fetchInvoiceData(params.id, params.id);
+    fetchDraftData(params.id, params.id);
   }, [params.id]);
 
   return (
@@ -301,6 +347,12 @@ export default function EditInvoice() {
                     className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer"
                   >
                     Discard
+                  </div>
+                  <div
+                    onClick={submitDraft}
+                    className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
+                  >
+                    Edit Draft
                   </div>
                   <button
                     type="submit"

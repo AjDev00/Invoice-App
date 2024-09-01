@@ -29,7 +29,7 @@ const defaultBill = {
   bill_to_invoice_date: "",
   bill_to_payment_terms: "Net 30 Days",
   bill_to_project_desc: "",
-  items: [{ itemName: "", Qty: 1, Price: 0 }],
+  item_list: [{ item_name: "", quantity: 1, price: 0 }],
 };
 
 export default function CreateInvoice() {
@@ -53,34 +53,36 @@ export default function CreateInvoice() {
   //useField.
   const { fields, append, remove } = useFieldArray({
     control, // name of the array in defaultValues
-    name: "items", // name of the item in the defaultValue  => defaultBill
+    name: "item_list", // name of the item in the defaultValue  => defaultBill
     rules: { minLength: 1 },
   });
 
   //useWatch
   const watchedItems = useWatch({
     control,
-    name: "items", // watch all items in the form
+    name: "item_list", // watch all items in the form
   });
 
   //calculate total.
   const calculateTotal = (index) => {
     const item = watchedItems[index];
-    return item?.Qty && item?.Price ? item.Qty * item.Price : 0;
+    return item?.quantity && item?.price ? item.quantity * item.price : 0;
   };
 
   //save to draft.
-  async function submitDraft(data) {
+  async function submitDraft() {
     clearErrors();
 
     const draftData = getValues();
     const sendDraftData = await createDraft(draftData);
 
     // Ensure data.items is correctly structured for backend.
-    const itemNames = draftData.items.map((item) => item.itemName);
-    const quantities = draftData.items.map((item) => item.Qty);
-    const prices = draftData.items.map((item) => item.Price);
-    const totals = draftData.items.map((item) => item.Qty * item.Price);
+    const itemNames = draftData.item_list.map((item) => item.item_name);
+    const quantities = draftData.item_list.map((item) => item.quantity);
+    const prices = draftData.item_list.map((item) => item.price);
+    const totals = draftData.item_list.map(
+      (item) => item.quantity * item.price
+    );
 
     // Get and Insert the foreign key.
     const draftId = sendDraftData.draft_id;
@@ -100,7 +102,7 @@ export default function CreateInvoice() {
     if (sendDraftData.status === false) {
       toast(sendDraftData.message);
     } else if (itemDraftData.status === false) {
-      toast("Unable to save as Draft!" || itemDraftData.message);
+      toast(itemDraftData.message);
     } else {
       toast("Saved as Draft!");
       history.push("/");
@@ -112,10 +114,10 @@ export default function CreateInvoice() {
     console.log("Original Data:", data);
 
     // Ensure data.items is correctly structured for backend
-    const itemNames = data.items.map((item) => item.itemName);
-    const quantities = data.items.map((item) => item.Qty);
-    const prices = data.items.map((item) => item.Price);
-    const totals = data.items.map((item) => item.Qty * item.Price);
+    const itemNames = data.item_list.map((item) => item.item_name);
+    const quantities = data.item_list.map((item) => item.quantity);
+    const prices = data.item_list.map((item) => item.price);
+    const totals = data.item_list.map((item) => item.quantity * item.price);
 
     // Send data for invoice creation
     const invoiceData = await createInvoice(data);
@@ -192,19 +194,20 @@ export default function CreateInvoice() {
                           key={item.id}
                           className="flex flex-col gap-6 mb-10"
                         >
+                          {/* Item Name. */}
                           <div className="flex flex-col gap-2">
                             <label htmlFor="" className="text-[#2f206b]">
                               Item Name
                             </label>
                             <input
                               type="text"
-                              {...register(`items.${index}.itemName`, {
+                              {...register(`item_list.${index}.item_name`, {
                                 required: true,
                               })}
                               placeholder="Banner Design"
                               className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                             />
-                            {errors.items?.[index]?.itemName && (
+                            {errors.item_list?.[index]?.item_name && (
                               <p className="text-red-500 font-semibold">
                                 Item name is required!
                               </p>
@@ -221,12 +224,12 @@ export default function CreateInvoice() {
                                 <input
                                   type="number"
                                   placeholder="1"
-                                  {...register(`items.${index}.Qty`, {
+                                  {...register(`item_list.${index}.quantity`, {
                                     required: true,
                                   })}
                                   className="w-16 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                                 />
-                                {errors.items?.[index]?.Qty && (
+                                {errors.item_list?.[index]?.quantity && (
                                   <p className="text-red-500 font-semibold">
                                     Quantity is required!
                                   </p>
@@ -241,12 +244,12 @@ export default function CreateInvoice() {
                                 <input
                                   type="number"
                                   placeholder="156.00"
-                                  {...register(`items.${index}.Price`, {
+                                  {...register(`item_list.${index}.price`, {
                                     required: true,
                                   })}
                                   className="w-24 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
                                 />
-                                {errors.items?.[index]?.Price && (
+                                {errors.item_list?.[index]?.price && (
                                   <p className="text-red-500 font-semibold">
                                     Price is required!
                                   </p>
@@ -268,13 +271,15 @@ export default function CreateInvoice() {
                             </div>
 
                             {/* Delete Icon. */}
-                            <div onClick={() => remove(index)}>
-                              <img
-                                src={deleteIcon}
-                                alt=""
-                                className="mt-[30px] w-4 cursor-pointer"
-                              />
-                            </div>
+                            {index > 0 && (
+                              <div onClick={() => remove(index)}>
+                                <img
+                                  src={deleteIcon}
+                                  alt=""
+                                  className="mt-[30px] w-4 cursor-pointer"
+                                />
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -286,7 +291,7 @@ export default function CreateInvoice() {
               {/* Add New Btn. */}
               <AddNewItem
                 handleAddNewItemClick={() =>
-                  append({ itemName: "", Qty: 1, Price: 0 })
+                  append({ item_name: "", quantity: 1, price: 0 })
                 }
               />
 

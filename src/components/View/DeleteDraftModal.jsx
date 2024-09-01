@@ -9,6 +9,7 @@ import { BsExclamationTriangleFill } from "react-icons/bs";
 import { useHistory } from "react-router-dom";
 import { AppContext } from "../../App";
 import { toast } from "react-toastify";
+import { deleteDraft } from "../../services/invoiceServices";
 
 const DeleteDraftModal = ({ open, setOpen, draftDetails }) => {
   const history = useHistory();
@@ -16,13 +17,10 @@ const DeleteDraftModal = ({ open, setOpen, draftDetails }) => {
   const { drafts, setDrafts } = useContext(AppContext);
 
   //delete a draft(api integration).
-  async function deleteDraft(id) {
-    const res = await fetch("http://localhost:8000/api/delete-draft/" + id, {
-      method: "DELETE",
-    });
-    const data = await res.json();
+  async function deleteDrafts(id) {
+    const eraseDraft = await deleteDraft(id);
 
-    if (data.status === true) {
+    if (eraseDraft.status === true) {
       const newDrafts = drafts && drafts.filter((draft) => draft.id != id);
 
       setDrafts(newDrafts);
@@ -84,7 +82,7 @@ const DeleteDraftModal = ({ open, setOpen, draftDetails }) => {
               <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                 <button
                   type="button"
-                  onClick={() => deleteDraft(draftDetails.id)}
+                  onClick={() => deleteDrafts(draftDetails.id)}
                   className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                 >
                   Continue

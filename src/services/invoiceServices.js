@@ -117,3 +117,53 @@ export async function getItemListById(id) {
 
   return await res.json();
 }
+
+//delete a specific/single draft.
+export async function deleteDraft(id) {
+  const res = await fetch("http://localhost:8000/api/delete-draft/" + id, {
+    method: "DELETE",
+  });
+
+  return res.json();
+}
+
+//get draft-item data.
+export async function getDraftItemById(id) {
+  const res = await fetch("http://localhost:8000/api/get-draft-item/" + id);
+
+  return await res.json();
+}
+
+//update a single draft.
+export async function updateDraft(data, id) {
+  const res = await fetch("http://localhost:8000/api/edit-draft/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+//update draft-item.
+export async function updateDraftItem(data, id) {
+  const res = await fetch("http://localhost:8000/api/edit-draft-item/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res.json();
+}
+
+// export async function deleteItemList(id) {
+//   const res = await fetch("http://localhost:8000/api/delete-item/" + id, {
+//     method: "DELETE",
+//   });
+
+//   return res.json();
+// }

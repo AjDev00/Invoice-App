@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import ViewInvoiceDetails from "./components/View/ViewInvoiceDetails";
 import ViewDraftDetails from "./components/View/ViewDraftDetails";
 import EditInvoice from "./components/Pages/EditInvoice";
+import EditDraft from "./components/Pages/EditDraft";
 
 export const AppContext = createContext();
 
@@ -74,6 +75,9 @@ function App() {
             </Route>
             <Route path="/edit-invoice/:id">
               <EditInvoice />
+            </Route>
+            <Route path="/edit-draft/:id">
+              <EditDraft />
             </Route>
           </Switch>
         </Router>
