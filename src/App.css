@@ -4,3 +4,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.poppins {
+  font-family: "Poppins", sans-serif;
+}

@@ -48,7 +48,7 @@ function App() {
         setDrafts,
       }}
     >
-      <div className="App ">
+      <div className="App poppins">
         <Router>
           <Switch>
             <Route exact path="/">
