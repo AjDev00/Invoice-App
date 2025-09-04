@@ -1,23 +1,9 @@
-import { useContext } from "react";
-import { CreateInvoiceContext } from "../Pages/CreateInvoice";
-
-export default function BillFrom() {
-  const {
-    billFromAddress,
-    setBillFromAddress,
-    billFromCity,
-    setBillFromCity,
-    billFromPostCode,
-    setBillFromPostCode,
-    billFromCountry,
-    setBillFromCountry,
-    register,
-    errors,
-    billFromAddressErr,
-    billFromCityErr,
-    billFromPostCodeErr,
-    billFromCountryErr,
-  } = useContext(CreateInvoiceContext);
+export default function BillFrom({ register, errors }) {
+  const errorMsg = (error) => {
+    if (error?.type === "required") return `This field is required!`;
+    else if (error?.type === "min") return "Min of 3 characters!";
+    else return "Error";
+  };
 
   return (
     <div>
@@ -25,112 +11,97 @@ export default function BillFrom() {
         <div className="flex flex-col gap-6">
           {/* street address. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Street Address
             </label>
             <input
               type="text"
-              {...register("fromAddress", { required: true, min: 3 })}
-              value={billFromAddress}
-              onChange={(e) => setBillFromAddress(e.target.value)}
+              {...register("bill_from_street_address", {
+                required: true,
+                min: 3,
+              })}
               placeholder="19 Union Terrace"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              className="border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billFromAddressErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.fromAddress && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_from_street_address && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_from_street_address)}
+              </span>
             )}
           </div>
 
           {/* city and post code. */}
-          <div className="flex flex-row gap-4">
-            {/* city. */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-[#3a15ce]">
-                City
-              </label>
-              <input
-                type="text"
-                {...register("fromCity", {
-                  required: true,
-                  // minLenght: { value: 3, message: "MinLength is 3 characters" },
-                })}
-                value={billFromCity}
-                onChange={(e) => setBillFromCity(e.target.value)}
-                placeholder="London"
-                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
-              />
-              {billFromCityErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.fromCity && (
+          <div className="flex flex-col gap-6 md:flex-row">
+            <div className="flex flex-row gap-4">
+              {/* city. */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor=""
+                  className="text-[#3a15ce] dark:text-white dark:opacity-90"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  {...register("bill_from_city", {
+                    required: true,
+                    // minLenght: { value: 3, message: "MinLength is 3 characters" },
+                  })}
+                  placeholder="London"
+                  className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
+                />
+                {errors.bill_from_city && (
                   <span className="text-red-500 font-semibold">
-                    This field is required!
+                    {errorMsg(errors.bill_from_city)}
                   </span>
-                )
-              )}
-            </div>
-
-            {/* post code. */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-[#3a15ce]">
-                Post Code
-              </label>
-              <input
-                type="text"
-                {...register("fromPostCode", { required: true })}
-                value={billFromPostCode}
-                onChange={(e) => setBillFromPostCode(e.target.value)}
-                placeholder="E1 3EZ"
-                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
-              />
-              {billFromPostCodeErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.fromPostCode && (
-                  <span className="text-red-500 font-semibold">
-                    This field is required!
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* country. */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
-              Country
-            </label>
-            <input
-              type="text"
-              {...register("fromCountry", { required: true })}
-              value={billFromCountry}
-              onChange={(e) => setBillFromCountry(e.target.value)}
-              placeholder="United Kingdom"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-            />
-            {billFromCountryErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
+                )}
               </div>
-            ) : (
-              errors.fromCountry && (
+
+              {/* post code. */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor=""
+                  className="text-[#3a15ce] dark:text-white dark:opacity-90"
+                >
+                  Post Code
+                </label>
+                <input
+                  type="text"
+                  {...register("bill_from_post_code", { required: true })}
+                  placeholder="E1 3EZ"
+                  className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
+                />
+                {errors.bill_from_post_code && (
+                  <span className="text-red-500 font-semibold">
+                    {errorMsg(errors.bill_from_post_code)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* country. */}
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor=""
+                className="text-[#3a15ce] dark:text-white dark:opacity-90"
+              >
+                Country
+              </label>
+              <input
+                type="text"
+                {...register("bill_from_country", { required: true })}
+                placeholder="United Kingdom"
+                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide lg:w-[450px]"
+              />
+              {errors.bill_from_country && (
                 <span className="text-red-500 font-semibold">
-                  This field is required!
+                  {errorMsg(errors.bill_from_country)}
                 </span>
-              )
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

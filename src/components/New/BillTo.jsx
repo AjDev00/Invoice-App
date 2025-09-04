@@ -1,61 +1,9 @@
-import { useContext, useRef, useState } from "react";
-import arrowDown from "../../assets/icon-arrow-down.svg";
-import { CreateInvoiceContext } from "../Pages/CreateInvoice";
-
-export default function BillTo() {
-  const {
-    billToName,
-    setBillToName,
-    billToEmail,
-    setBillToEmail,
-    billToAddress,
-    setBillToAddress,
-    billToCity,
-    setBillToCity,
-    billToPostCode,
-    setBillToPostCode,
-    billToCountry,
-    setBillToCountry,
-    billToInvoiceDate,
-    setBillToInvoiceDate,
-    billToPaymentTerms,
-    setBillToPaymentTerms,
-    billToProjectDesc,
-    setBillToProjectDesc,
-    register,
-    errors,
-    dateErr,
-    billToNameErr,
-    billToEmailErr,
-    billToAddressErr,
-    billToCityErr,
-    billToPostCodeErr,
-    billToCountryErr,
-    billToInvoiceDateErr,
-    billToProjectDescErr,
-  } = useContext(CreateInvoiceContext);
-
-  //drop-down params for payment type.
-  const [openPaymentTerms, setOpenPaymentTerms] = useState(false);
-
-  const selectOneDayRef = useRef(null);
-  const selectSevenDaysRef = useRef(null);
-  const selectThirtyDaysRef = useRef(null);
-
-  function handleSelectOneDay() {
-    setBillToPaymentTerms(selectOneDayRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
-
-  function handleSelectSevenDaysRef() {
-    setBillToPaymentTerms(selectSevenDaysRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
-
-  function handleSelectThirtyDaysRef() {
-    setBillToPaymentTerms(selectThirtyDaysRef.current.innerText);
-    setOpenPaymentTerms(false);
-  }
+export default function BillTo({ register, errors }) {
+  const errorMsg = (error) => {
+    if (error?.type === "required") return `This field is required!`;
+    else if (error?.type === "min") return "Min of 3 characters!";
+    else return "Error";
+  };
 
   return (
     <div>
@@ -67,262 +15,199 @@ export default function BillTo() {
         <div className="flex flex-col gap-6">
           {/* Client Name. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Client's Name
             </label>
             <input
               type="text"
-              {...register("name", { required: true })}
-              value={billToName}
-              onChange={(e) => setBillToName(e.target.value)}
+              {...register("bill_to_client_name", { required: true })}
               placeholder="Alex Grim"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToNameErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.name && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_client_name && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_client_name)}
+              </span>
             )}
           </div>
 
           {/* Client Email. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Client's Email
             </label>
             <input
               type="email"
-              {...register("email", { required: true })}
-              value={billToEmail}
-              onChange={(e) => setBillToEmail(e.target.value)}
+              {...register("bill_to_client_email", { required: true })}
               placeholder="alexgrim@gmail.com"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToEmailErr ? (
-              <div className="text-red-500 font-semibold">
-                Must be a valid email!
-              </div>
-            ) : (
-              errors.email && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_client_email && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_client_email)}
+              </span>
             )}
           </div>
 
           {/* Street Address. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Street Address
             </label>
             <input
               type="text"
-              {...register("streetAddress", { required: true })}
-              value={billToAddress}
-              onChange={(e) => setBillToAddress(e.target.value)}
+              {...register("bill_to_street_address", { required: true })}
               placeholder="84 Church Way"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToAddressErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.streetAddress && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_street_address && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_street_address)}
+              </span>
             )}
           </div>
 
           {/* city and post code. */}
-          <div className="flex flex-row gap-4">
-            {/* city. */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-[#3a15ce]">
-                City
-              </label>
-              <input
-                type="text"
-                {...register("toCity", { required: true })}
-                value={billToCity}
-                onChange={(e) => setBillToCity(e.target.value)}
-                placeholder="Bradford"
-                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
-              />
-              {billToCityErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.toCity && (
+          <div className="flex flex-col gap-6 md:flex-row">
+            <div className="flex flex-row gap-4">
+              {/* city. */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor=""
+                  className="text-[#3a15ce] dark:text-white dark:opacity-90"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  {...register("bill_to_city", { required: true })}
+                  placeholder="Bradford"
+                  className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none font-bold focus:outline-[#7C5DFA] w-40 outline-transparent focus:duration-300 placeholder:tracking-wide"
+                />
+                {errors.bill_to_city && (
                   <span className="text-red-500 font-semibold">
-                    This field is required!
+                    {errorMsg(errors.bill_to_city)}
                   </span>
-                )
-              )}
-            </div>
-
-            {/* post code. */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="" className="text-[#3a15ce]">
-                Post Code
-              </label>
-              <input
-                type="text"
-                {...register("toPostCode", { required: true })}
-                value={billToPostCode}
-                onChange={(e) => setBillToPostCode(e.target.value)}
-                placeholder="BD1 39PB"
-                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
-              />
-              {billToPostCodeErr ? (
-                <div className="text-red-500 font-semibold">
-                  Min of 3 characters!
-                </div>
-              ) : (
-                errors.toPostCode && (
-                  <span className="text-red-500 font-semibold">
-                    This field is required!
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* country. */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
-              Country
-            </label>
-            <input
-              type="text"
-              {...register("toCountry", { required: true })}
-              value={billToCountry}
-              onChange={(e) => setBillToCountry(e.target.value)}
-              placeholder="United Kingdom"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-            />
-            {billToCountryErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
+                )}
               </div>
-            ) : (
-              errors.toCountry && (
+
+              {/* post code. */}
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor=""
+                  className="text-[#3a15ce] dark:text-white dark:opacity-90"
+                >
+                  Post Code
+                </label>
+                <input
+                  type="text"
+                  {...register("bill_to_post_code", { required: true })}
+                  placeholder="BD1 39PB"
+                  className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none font-bold focus:outline-[#7C5DFA] w-40 outline-transparent duration-300 placeholder:tracking-wide"
+                />
+                {errors.bill_to_post_code && (
+                  <span className="text-red-500 font-semibold">
+                    {errorMsg(errors.bill_to_post_code)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* country. */}
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor=""
+                className="text-[#3a15ce] dark:text-white dark:opacity-90"
+              >
+                Country
+              </label>
+              <input
+                type="text"
+                {...register("bill_to_country", { required: true })}
+                placeholder="United Kingdom"
+                className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide lg:w-[450px]"
+              />
+              {errors.bill_to_country && (
                 <span className="text-red-500 font-semibold">
-                  This field is required!
+                  {errorMsg(errors.bill_to_country)}
                 </span>
-              )
-            )}
+              )}
+            </div>
           </div>
 
           {/* invoice date. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Invoice Date
             </label>
             <input
               type="text"
-              {...register("date", { required: true })}
-              value={billToInvoiceDate}
-              onChange={(e) => setBillToInvoiceDate(e.target.value)}
+              {...register("bill_to_invoice_date", { required: true })}
               placeholder="2021-Aug-12"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
+              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
             />
-            {billToInvoiceDateErr ? (
-              <div className="text-red-500 font-semibold">
-                Must be a valid date!
-              </div>
-            ) : dateErr ? (
-              <div className="text-red-500 font-semibold">{dateErr}</div>
-            ) : (
-              errors.date && (
-                <span className="text-red-500 font-semibold">Pick a date!</span>
-              )
+            {errors.bill_to_invoice_date && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_invoice_date)}
+              </span>
             )}
           </div>
 
           {/* Payment Terms. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Payment Terms
             </label>
-            <div
-              onClick={() => setOpenPaymentTerms(!openPaymentTerms)}
-              className="cursor-pointer flex flex-row justify-between border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300"
-            >
-              <div>{billToPaymentTerms}</div>
-              <div>
-                <img
-                  src={arrowDown}
-                  alt=""
-                  className="w-3 h-2 mt-2 cursor-pointer"
-                />
-              </div>
+            <div>
+              <select
+                {...register("bill_to_payment_terms", { required: true })}
+                className="w-full border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              >
+                <option>Net 1 Day</option>
+                <option>Net 7 Days</option>
+                <option>Net 30 Days</option>
+              </select>
+              {errors.bill_to_payment_terms && (
+                <span className="text-red-500 font-semibold">
+                  {errorMsg(errors.bill_to_payment_terms)}
+                </span>
+              )}
             </div>
-            {openPaymentTerms && (
-              <div className="duration-300 flex flex-col gap-3.5 border border-slate-300 bg-white font-semibold -mt-2 rounded-md">
-                {/* 1 Day. */}
-                <div
-                  onClick={handleSelectOneDay}
-                  ref={selectOneDayRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-4 duration-100 cursor-pointer"
-                >
-                  Net 1 Day
-                </div>
-
-                {/* 7 Days. */}
-                <div
-                  onClick={handleSelectSevenDaysRef}
-                  ref={selectSevenDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 mb-1 pt-2 duration-100 cursor-pointer"
-                >
-                  Net 7 Days
-                </div>
-
-                {/* 30 Days. */}
-                <div
-                  onClick={handleSelectThirtyDaysRef}
-                  ref={selectThirtyDaysRef}
-                  className="hover:border hover:border-transparent hover:bg-slate-200 hover:p-4 hover:duration-300 pl-2 pt-2 duration-100 cursor-pointer"
-                >
-                  Net 30 Days
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Project Description. */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="" className="text-[#3a15ce]">
+            <label
+              htmlFor=""
+              className="text-[#3a15ce] dark:text-white dark:opacity-90"
+            >
               Project Description
             </label>
             <input
               type="text"
-              {...register("projectDesc", { required: true })}
-              value={billToProjectDesc}
-              onChange={(e) => setBillToProjectDesc(e.target.value)}
+              {...register("bill_to_project_desc", { required: true })}
               placeholder="Graphics Design"
-              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
             />
-            {billToProjectDescErr ? (
-              <div className="text-red-500 font-semibold">
-                Min of 3 characters!
-              </div>
-            ) : (
-              errors.projectDesc && (
-                <span className="text-red-500 font-semibold">
-                  This field is required!
-                </span>
-              )
+            {errors.bill_to_project_desc && (
+              <span className="text-red-500 font-semibold">
+                {errorMsg(errors.bill_to_project_desc)}
+              </span>
             )}
           </div>
         </div>

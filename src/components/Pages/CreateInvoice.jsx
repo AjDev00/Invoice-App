@@ -1,217 +1,150 @@
-import Header from "../Home/Header";
-import leftArrow from "../../assets/icon-arrow-left.svg";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import AddNewItem from "../Home/AddNewItem";
-import { createContext, useContext, useRef, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import BillFrom from "../New/BillFrom";
-import BillTo from "../New/BillTo";
-import ItemList from "../New/ItemList";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { BsExclamationTriangleFill } from "react-icons/bs";
-import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { BillFrom, BillTo, TCustomModal } from "../New";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import Header from "../Home/Header";
+import { useState } from "react";
+import deleteIcon from "../../assets/icon-delete.svg";
+import {
+  createDraft,
+  createInvoice,
+  createItemLists,
+  createItemDraft,
+} from "../../services/invoiceServices";
+import AddNewItem from "../Home/AddNewItem";
+import GoBack from "../ReUsable/GoBack";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { motion, AnimatePresence } from "framer-motion";
 
-export const CreateInvoiceContext = createContext();
+const defaultBill = {
+  bill_from_street_address: "",
+  bill_from_city: "",
+  bill_from_post_code: "",
+  bill_from_country: "",
+  bill_to_client_name: "",
+  bill_to_client_email: "",
+  bill_to_street_address: "",
+  bill_to_city: "",
+  bill_to_post_code: "",
+  bill_to_country: "",
+  bill_to_invoice_date: "",
+  bill_to_payment_terms: "Net 30 Days",
+  bill_to_project_desc: "",
+  item_list: [{ item_name: "", quantity: 1, price: 0 }],
+};
 
 export default function CreateInvoice() {
+  const [open, setOpen] = useState(false); //control discard modal.
+  const history = useHistory();
+
   //react-hook form params.
   const {
     register,
     handleSubmit,
+    reset,
     watch,
+    control,
+    clearErrors,
+    getValues,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: { ...defaultBill },
+  });
 
-  const history = useHistory();
+  //useField.
+  const { fields, append, remove } = useFieldArray({
+    control, // name of the array in defaultValues
+    name: "item_list", // name of the item in the defaultValue  => defaultBill
+    rules: { minLength: 1 },
+  });
 
-  //bill-From params.
-  const [billFromAddress, setBillFromAddress] = useState("");
-  const [billFromCity, setBillFromCity] = useState("");
-  const [billFromPostCode, setBillFromPostCode] = useState("");
-  const [billFromCountry, setBillFromCountry] = useState("");
+  //useWatch
+  const watchedItems = useWatch({
+    control,
+    name: "item_list", // watch all items in the form
+  });
 
-  //bill-To params.
-  const [billToName, setBillToName] = useState("");
-  const [billToEmail, setBillToEmail] = useState("");
-  const [billToAddress, setBillToAddress] = useState("");
-  const [billToCity, setBillToCity] = useState("");
-  const [billToPostCode, setBillToPostCode] = useState("");
-  const [billToCountry, setBillToCountry] = useState("");
-  const [billToInvoiceDate, setBillToInvoiceDate] = useState("");
-  const [billToPaymentTerms, setBillToPaymentTerms] = useState("Net 30 Days");
-  const [billToProjectDesc, setBillToProjectDesc] = useState("");
-
-  //error handling.
-  const [dateErr, setDateErr] = useState("");
-  const [billFromAddressErr, setBillFromAddressErr] = useState("");
-  const [billFromCityErr, setBillFromCityErr] = useState("");
-  const [billFromPostCodeErr, setBillFromPostCodeErr] = useState("");
-  const [billFromCountryErr, setBillFromCountryErr] = useState("");
-  const [billToNameErr, setBillToNameErr] = useState("");
-  const [billToEmailErr, setBillToEmailErr] = useState("");
-  const [billToAddressErr, setBillToAddressErr] = useState("");
-  const [billToCityErr, setBillToCityErr] = useState("");
-  const [billToPostCodeErr, setBillToPostCodeErr] = useState("");
-  const [billToCountryErr, setBillToCountryErr] = useState("");
-  const [billToInvoiceDateErr, setBillToInvoiceDateErr] = useState("");
-  const [billToProjectDescErr, setBillToProjectDescErr] = useState("");
-  const [itemNameErr, setItemNameErr] = useState("");
-  const [quantityErr, setQuantityErr] = useState("");
-  const [priceErr, setPriceErr] = useState("");
-
-  //array of forms.
-  const [items, setItems] = useState([]);
-
-  //control discard modal.
-  const [open, setOpen] = useState(false);
-
-  //function to create a new form array when clicked.
-  function handleAddNewItemClick() {
-    setItems([...items, { itemName: "", Qty: "", Price: "" }]);
-  }
-
-  //function to handle input change in the form array.
-  function handleInputChange(index, event) {
-    const { name, value } = event.target;
-    const newItems = [...items]; //creates a shallow copy the array and assigns it to newItems.
-    newItems[index][name] = value; //this allows us change the value of a particular field using the index and the name.
-
-    setItems(newItems);
-  }
-
-  //function to erase/delete an array form.
-  function handleDelete(index) {
-    const newItems = [...items]; //store the forms array in a new variable.
-    newItems.splice(index, 1); //delete an array at a specific index.
-
-    setItems(newItems);
-  }
-
-  function onSubmit() {
-    console.log("submitted");
-  }
+  //calculate total.
+  const calculateTotal = (index) => {
+    const item = watchedItems[index];
+    return item?.quantity && item?.price ? item.quantity * item.price : 0;
+  };
 
   //save to draft.
   async function submitDraft() {
-    const newData = {
-      // ...data,
-      bill_from_street_address: billFromAddress,
-      bill_from_city: billFromCity,
-      bill_from_post_code: billFromPostCode,
-      bill_from_country: billFromCountry,
-      bill_to_client_name: billToName,
-      bill_to_client_email: billToEmail,
-      bill_to_street_address: billToAddress,
-      bill_to_city: billToCity,
-      bill_to_post_code: billToPostCode,
-      bill_to_country: billToCountry,
-      bill_to_invoice_date: billToInvoiceDate,
-      bill_to_payment_terms: billToPaymentTerms,
-      bill_to_project_desc: billToProjectDesc,
+    clearErrors();
+
+    const draftData = getValues();
+    const sendDraftData = await createDraft(draftData);
+
+    // Ensure data.items is correctly structured for backend.
+    const itemNames = draftData.item_list.map((item) => item.item_name);
+    const quantities = draftData.item_list.map((item) => item.quantity);
+    const prices = draftData.item_list.map((item) => item.price);
+    const totals = draftData.item_list.map(
+      (item) => item.quantity * item.price
+    );
+
+    // Get and Insert the foreign key.
+    const draftId = sendDraftData.draft_id;
+
+    // Structure everything into one object.
+    const finalData = {
+      draft_id: draftId,
+      item_name: itemNames,
+      quantity: quantities,
+      price: prices,
+      total: totals,
     };
 
-    const res = await fetch("http://localhost:8000/api/drafts", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
+    //Save item-lists to draft also if included.
+    const itemDraftData = await createItemDraft(finalData);
 
-    const draftData = await res.json();
-    // console.log(draftData);
-
-    if (draftData.status === false) {
-      setDateErr(draftData.errors.bill_to_invoice_date[0]);
-      toast("Unable to save as Draft!");
+    if (sendDraftData.status === false) {
+      toast(sendDraftData.message);
+    } else if (itemDraftData.status === false) {
+      toast(itemDraftData.message);
     } else {
       toast("Saved as Draft!");
-      setBillFromAddress("");
-      setBillFromCity("");
-      setBillFromPostCode("");
-      setBillFromCountry("");
-      setBillToName("");
-      setBillToEmail("");
-      setBillToAddress("");
-      setBillToCity("");
-      setBillToCountry("");
-      setBillToInvoiceDate("");
-      setBillToProjectDesc("");
+      history.push("/");
     }
   }
 
   //-- insert/create invoices
-  async function onSubmit() {
-    //insert billTo and billFrom.
-    const newData = {
-      bill_from_street_address: billFromAddress,
-      bill_from_city: billFromCity,
-      bill_from_post_code: billFromPostCode,
-      bill_from_country: billFromCountry,
-      bill_to_client_name: billToName,
-      bill_to_client_email: billToEmail,
-      bill_to_street_address: billToAddress,
-      bill_to_city: billToCity,
-      bill_to_post_code: billToPostCode,
-      bill_to_country: billToCountry,
-      bill_to_invoice_date: billToInvoiceDate,
-      bill_to_payment_terms: billToPaymentTerms,
-      bill_to_project_desc: billToProjectDesc,
+  async function onSubmit(data) {
+    console.log("Original Data:", data);
+
+    // Ensure data.items is correctly structured for backend
+    const itemNames = data.item_list.map((item) => item.item_name);
+    const quantities = data.item_list.map((item) => item.quantity);
+    const prices = data.item_list.map((item) => item.price);
+    const totals = data.item_list.map((item) => item.quantity * item.price);
+
+    // Send data for invoice creation
+    const invoiceData = await createInvoice(data);
+    console.log("Invoice Data:", invoiceData);
+
+    //Get and Insert the foreign key.
+    const invoiceId = invoiceData.invoice_id;
+
+    // Prepare the finalData for item lists creation
+    const finalData = {
+      invoice_id: invoiceId,
+      item_name: itemNames,
+      quantity: quantities,
+      price: prices,
+      total: totals,
     };
 
-    const res = await fetch("http://localhost:8000/api/invoices", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
+    console.log("Final Data Sent to createItemLists:", finalData);
 
-    const invoiceData = await res.json();
-    console.log(invoiceData);
-
-    //insert item-list.
-    const itemList = {
-      item_name: itemName,
-      quantity: Qty,
-      price: Price,
-      total: Qty * Price,
-    };
-
-    const resList = await fetch("http://localhost:8000/api/item-list", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(itemList),
-    });
-
-    const itemListData = await resList.json();
-    console.log(itemListData);
+    // Send data for item list creation
+    const itemListData = await createItemLists(finalData);
 
     if (invoiceData.status === false) {
-      setBillToAddressErr(invoiceData.errors.bill_to_street_address);
-      setBillToCityErr(invoiceData.errors.bill_to_city);
-      setBillToPostCodeErr(invoiceData.errors.bill_to_post_code);
-      setBillToCountryErr(invoiceData.errors.bill_to_country);
-      setBillToInvoiceDateErr(invoiceData.errors.bill_to_invoice_date);
-      setBillToProjectDescErr(invoiceData.errors.bill_to_project_desc);
-      setBillFromAddressErr(invoiceData.errors.bill_from_street_address);
-      setBillFromCityErr(invoiceData.errors.bill_from_city);
-      setBillFromPostCodeErr(invoiceData.errors.bill_from_post_code);
-      setBillFromCountryErr(invoiceData.errors.bill_from_country);
-      setBillToNameErr(invoiceData.errors.bill_to_client_name);
-      setBillToEmailErr(invoiceData.errors.bill_to_client_email);
+      toast(invoiceData.message);
     } else if (itemListData.status === false) {
-      setItemNameErr(itemListData.errors.item_name);
-      setQuantityErr(itemListData.errors.quantity);
-      setPriceErr(itemListData.errors.price);
+      toast(itemListData.message);
     } else {
       toast("Invoice created successfully");
       history.push("/");
@@ -219,204 +152,197 @@ export default function CreateInvoice() {
   }
 
   return (
-    <CreateInvoiceContext.Provider
-      value={{
-        items,
-        handleAddNewItemClick,
-        handleInputChange,
-        handleDelete,
-        billFromAddress,
-        setBillFromAddress,
-        billFromCity,
-        setBillFromCity,
-        billFromPostCode,
-        setBillFromPostCode,
-        billFromCountry,
-        setBillFromCountry,
-        billToName,
-        setBillToName,
-        billToEmail,
-        setBillToEmail,
-        billToAddress,
-        setBillToAddress,
-        billToCity,
-        setBillToCity,
-        billToPostCode,
-        setBillToPostCode,
-        billToCountry,
-        setBillToCountry,
-        billToInvoiceDate,
-        setBillToInvoiceDate,
-        billToPaymentTerms,
-        setBillToPaymentTerms,
-        billToProjectDesc,
-        setBillToProjectDesc,
-        register,
-        errors,
-        dateErr,
-        billFromAddressErr,
-        billFromCityErr,
-        billFromPostCodeErr,
-        billFromCountryErr,
-        billToNameErr,
-        billToEmailErr,
-        billToAddressErr,
-        billToCityErr,
-        billToPostCodeErr,
-        billToCountryErr,
-        billToInvoiceDateErr,
-        billToProjectDescErr,
-        itemNameErr,
-        quantityErr,
-        priceErr,
-      }}
-    >
-      <div>
-        <div className="mb-10">
-          <div>
-            <Header />
-          </div>
-          <div className="px-3 pt-5">
-            <div
-              onClick={() => history.go(-1)}
-              className="flex flex-row font-open-sans items-center gap-3 pt-2"
-            >
-              <div>
-                <img src={leftArrow} alt="" className="h-4 cursor-pointer" />
-              </div>
-              <div className="font-bold tracking-wide">Go back</div>
-            </div>
-
-            <div className="pt-10">
-              <div className="flex flex-col gap-5">
-                <div className="font-bold font-open-sans text-2xl mb-2">
-                  New Invoice
-                </div>
-                <div className="text-[#7C5DFA] font-bold text-[18px] mb-5">
-                  Bill From
-                </div>
-              </div>
-
-              {/* Form. */}
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-5"
-              >
-                <span>
-                  <BillFrom />
-                </span>
-                <span>
-                  <BillTo />
-                </span>
-
-                {/* item list. */}
-                <div>
-                  <div className="text-[#2f206b] font-bold text-[18px] mb-4 mt-6">
-                    Item List
-                  </div>
-                  <div>
-                    <ItemList />
-                  </div>
-                </div>
-
-                {/* Add New Btn. */}
-                <AddNewItem />
-
-                {/* Other Btns. */}
-                <div className="flex flex-row justify-between pt-8 border-t-2">
-                  <div
-                    onClick={() => setOpen(true)}
-                    className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer"
-                  >
-                    Discard
-                  </div>
-                  {billToPaymentTerms ? (
-                    <div
-                      onClick={submitDraft}
-                      className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
-                    >
-                      Save as Draft
-                    </div>
-                  ) : (
-                    <div
-                      // disabled="disabled"
-                      className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-not-allowed"
-                    >
-                      Save as Draft
-                    </div>
-                  )}
-                  <button
-                    type="submit"
-                    className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer"
-                  >
-                    Save & Send
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        {/* //Tailwind custom Modal. */}
+    <div>
+      <div className="mb-10 dark:mb-0 overflow-hidden dark:bg-[#1E2139] dark:text-white min-h-screen duration-500">
         <div>
-          <Dialog open={open} onClose={setOpen} className="relative z-10">
-            <DialogBackdrop
-              transition
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
-            />
-            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-              <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <DialogPanel
-                  transition
-                  className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
-                >
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <BsExclamationTriangleFill
-                          aria-hidden="true"
-                          className="h-6 w-6 text-red-600"
-                        />
-                      </div>
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <DialogTitle
-                          as="h3"
-                          className="text-base font-semibold leading-6 text-gray-900"
-                        >
-                          Discard Invoice
-                        </DialogTitle>
-                        <div className="mt-2">
-                          <p className="text-sm text-gray-500">
-                            Are you sure you want to discard this invoice?{" "}
-                            <br /> This action cannot be undone.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      onClick={() => history.push("/")}
-                      className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                    >
-                      Continue
-                    </button>
-                    <button
-                      type="button"
-                      data-autofocus
-                      onClick={() => setOpen(false)}
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </DialogPanel>
+          <Header />
+        </div>
+        <div className="px-3 pt-5">
+          <div className="lg:ml-64 md:py-5 md:ml-32">
+            <GoBack />
+          </div>
+
+          <div className="pt-10 lg:px-64 md:px-32">
+            <div className="flex flex-col gap-5">
+              <div className="font-bold font-open-sans text-2xl mb-2">
+                New Invoice
+              </div>
+              <div className="text-[#7C5DFA] font-bold text-[18px] mb-5">
+                Bill From
               </div>
             </div>
-          </Dialog>
+
+            {/* Form. */}
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-5"
+            >
+              <span>
+                <BillFrom register={register} errors={errors} />
+              </span>
+              <span>
+                <BillTo register={register} errors={errors} />
+              </span>
+
+              {/*Form mapping - item list. */}
+              <div>
+                <div className="text-[#2f206b] font-bold text-[18px] mb-4 mt-6 dark:text-[#7C5DFA]">
+                  Item List
+                </div>
+                <div>
+                  <div className="flex flex-col gap-16">
+                    <div>
+                      <AnimatePresence>
+                        {fields.map((item, index) => (
+                          <motion.div
+                            key={item.id}
+                            className="flex flex-col gap-6 mb-10"
+                            initial={{ opacity: 0, x: 500 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0 }}
+                          >
+                            {/* Item Name. */}
+                            <div className="flex flex-col gap-2">
+                              <label
+                                htmlFor=""
+                                className="text-[#2f206b] dark:text-white dark:opacity-90"
+                              >
+                                Item Name
+                              </label>
+                              <input
+                                type="text"
+                                {...register(`item_list.${index}.item_name`, {
+                                  required: true,
+                                })}
+                                placeholder="Banner Design"
+                                className="border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                              />
+                              {errors.item_list?.[index]?.item_name && (
+                                <p className="text-red-500 font-semibold">
+                                  Item name is required!
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="flex flex-row justify-between items-center px-1">
+                              <div className="flex flex-row gap-4">
+                                {/* Quantity. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Qty.
+                                  </label>
+                                  <input
+                                    type="number"
+                                    placeholder="1"
+                                    {...register(
+                                      `item_list.${index}.quantity`,
+                                      {
+                                        required: true,
+                                      }
+                                    )}
+                                    className="w-16 border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                                  />
+                                  {errors.item_list?.[index]?.quantity && (
+                                    <p className="text-red-500 font-semibold">
+                                      Quantity is required!
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Price. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Price
+                                  </label>
+                                  <input
+                                    type="number"
+                                    placeholder="156.00"
+                                    {...register(`item_list.${index}.price`, {
+                                      required: true,
+                                    })}
+                                    className="w-24 border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                                  />
+                                  {errors.item_list?.[index]?.price && (
+                                    <p className="text-red-500 font-semibold">
+                                      Price is required!
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Total. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="mb-[17px] text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Total
+                                  </label>
+                                  <span className="font-extrabold text-[#7C5DFA] opacity-70 dark:text-white">
+                                    {calculateTotal(index).toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Delete Icon. */}
+                              {index > 0 && (
+                                <div onClick={() => remove(index)}>
+                                  <img
+                                    src={deleteIcon}
+                                    alt=""
+                                    className="mt-[30px] w-4 cursor-pointer"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Add New Btn. */}
+              <AddNewItem
+                handleAddNewItemClick={() =>
+                  append({ item_name: "", quantity: 1, price: 0 })
+                }
+              />
+
+              {/* Other Btns. */}
+              <div className="flex flex-row justify-between pt-8 border-t-2 dark:pb-10 dark:md:mt-10">
+                <div
+                  onClick={() => setOpen(true)}
+                  className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer hover:opacity-70 duration-200"
+                >
+                  Discard
+                </div>
+                <div
+                  onClick={submitDraft}
+                  className="border border-transparent dark:text-white dark:text-opacity-70 text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer hover:opacity-70 duration-200"
+                >
+                  Save as Draft
+                </div>
+                <button
+                  type="submit"
+                  className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer hover:opacity-70 duration-200"
+                >
+                  Save & Send
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </CreateInvoiceContext.Provider>
+
+      {/* //Tailwind custom Modal. */}
+      <TCustomModal open={open} setOpen={setOpen} />
+    </div>
   );
 }
