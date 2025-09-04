@@ -14,7 +14,7 @@ export default function DisplayHeader() {
   const [filter, setFilter] = useState(false);
 
   //invoice params.
-  const { invoices, setInvoices, invoiceStatuses } = useContext(AppContext);
+  const { invoices, setInvoices } = useContext(AppContext);
   const [countInvoice, setCountInvoice] = useState("");
 
   //draft params.
@@ -49,11 +49,11 @@ export default function DisplayHeader() {
   }, []);
 
   return (
-    <div className="pb-10">
-      <div className="flex flex-row justify-between px-3 pt-7 items-center">
+    <div className="pb-10 md:mt-7">
+      <div className="flex flex-row justify-between px-3 pt-7 items-center lg:gap-96 md:gap-[270px] md:mb-16">
         <div className="font-bold">
           <div className="text-[24px] tracking-tight">Invoices</div>
-          <div className="opacity-65 text-[14px]">
+          <div className="opacity-65 text-[14px] md:hidden">
             {invoices &&
             invoices.length === 0 &&
             countInvoice === 0 &&
@@ -61,21 +61,43 @@ export default function DisplayHeader() {
               ? "No Invoices"
               : countInvoice + countDraft + " invoices"}
           </div>
+          <div className="opacity-65 text-[14px] hidden md:flex">
+            {invoices &&
+            invoices.length === 0 &&
+            countInvoice === 0 &&
+            countDraft === 0
+              ? "No Invoices"
+              : "There are " + (countInvoice + countDraft) + " total invoices"}
+          </div>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 lg:gap-10 md:gap-4">
           <div
             onClick={() => setFilter(!filter)}
-            className="flex flex-row justify-center items-center gap-2 cursor-pointer"
+            className="flex flex-row justify-center items-center gap-2 cursor-pointer md:gap-2"
           >
-            <div className="font-bold text-[18px] tracking-wide">Filter</div>
-            <img src={arrowDown} alt="" className="w-3 h-2" />
+            <div className="font-bold text-[18px] tracking-wide md:hidden">
+              Filter
+            </div>
+            <div className="font-bold text-[18px] tracking-wide hidden md:flex md:text-nowrap">
+              Filter by status
+            </div>
+            {!filter ? (
+              <img src={arrowDown} alt="" className="w-3 h-2" />
+            ) : (
+              <img src={arrowDown} alt="" className="w-3 h-2 rotate-180" />
+            )}
           </div>
           <Link to="/create-invoice">
-            <div className="flex flex-row justify-center items-center border border-transparent bg-[#7C5DFA] rounded-full p-0 px-2 py-2.5 gap-2">
-              <div className="border border-white bg-white p-1 rounded-full">
+            <div className="flex flex-row justify-center items-center border border-transparent bg-[#7C5DFA] rounded-full p-0 px-2 py-2.5 gap-2 hover:opacity-70 duration-300">
+              <div className="border border-white bg-white p-1 rounded-full md:p-3">
                 <img src={plus} alt="" className="w-3 h-3" />
               </div>
-              <div className="text-white font-semibold tracking-wide">New</div>
+              <div className="text-white font-semibold tracking-wide md:hidden">
+                New
+              </div>
+              <div className="text-white font-semibold tracking-wide hidden md:flex">
+                New Invoice
+              </div>
             </div>
           </Link>
         </div>
@@ -113,6 +135,7 @@ export default function DisplayHeader() {
           );
         })}
 
+      {/* display drafts. */}
       {!loading &&
         drafts &&
         drafts.map((draft, index) => {

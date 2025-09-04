@@ -48,13 +48,15 @@ function App() {
         setDrafts,
       }}
     >
-      <div className="App">
+      <div className="App ">
         <Router>
           <Switch>
             <Route exact path="/">
-              <div>
-                <Header />
-                <div className="bg-slate-100 min-h-screen">
+              <div className="bg-slate-100 dark:bg-[#1E2139] md:flex md:flex-row lg:gap-60 md:gap-20">
+                <div className="">
+                  <Header />
+                </div>
+                <div className="bg-slate-100 dark:bg-[#1E2139] dark:text-white min-h-screen duration-500">
                   <DisplayHeader />
                   {/* <DisplayInvoices /> */}
                 </div>

@@ -14,6 +14,7 @@ import {
 import AddNewItem from "../Home/AddNewItem";
 import GoBack from "../ReUsable/GoBack";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { motion, AnimatePresence } from "framer-motion";
 
 const defaultBill = {
   bill_from_street_address: "",
@@ -152,14 +153,16 @@ export default function CreateInvoice() {
 
   return (
     <div>
-      <div className="mb-10">
+      <div className="mb-10 dark:mb-0 overflow-hidden dark:bg-[#1E2139] dark:text-white min-h-screen duration-500">
         <div>
           <Header />
         </div>
         <div className="px-3 pt-5">
-          <GoBack />
+          <div className="lg:ml-64 md:py-5 md:ml-32">
+            <GoBack />
+          </div>
 
-          <div className="pt-10">
+          <div className="pt-10 lg:px-64 md:px-32">
             <div className="flex flex-col gap-5">
               <div className="font-bold font-open-sans text-2xl mb-2">
                 New Invoice
@@ -183,106 +186,123 @@ export default function CreateInvoice() {
 
               {/*Form mapping - item list. */}
               <div>
-                <div className="text-[#2f206b] font-bold text-[18px] mb-4 mt-6">
+                <div className="text-[#2f206b] font-bold text-[18px] mb-4 mt-6 dark:text-[#7C5DFA]">
                   Item List
                 </div>
                 <div>
                   <div className="flex flex-col gap-16">
                     <div>
-                      {fields.map((item, index) => (
-                        <div
-                          key={item.id}
-                          className="flex flex-col gap-6 mb-10"
-                        >
-                          {/* Item Name. */}
-                          <div className="flex flex-col gap-2">
-                            <label htmlFor="" className="text-[#2f206b]">
-                              Item Name
-                            </label>
-                            <input
-                              type="text"
-                              {...register(`item_list.${index}.item_name`, {
-                                required: true,
-                              })}
-                              placeholder="Banner Design"
-                              className="border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-                            />
-                            {errors.item_list?.[index]?.item_name && (
-                              <p className="text-red-500 font-semibold">
-                                Item name is required!
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex flex-row justify-between items-center px-1">
-                            <div className="flex flex-row gap-4">
-                              {/* Quantity. */}
-                              <div className="flex flex-col gap-2">
-                                <label htmlFor="" className="text-[#2f206b]">
-                                  Qty.
-                                </label>
-                                <input
-                                  type="number"
-                                  placeholder="1"
-                                  {...register(`item_list.${index}.quantity`, {
-                                    required: true,
-                                  })}
-                                  className="w-16 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-                                />
-                                {errors.item_list?.[index]?.quantity && (
-                                  <p className="text-red-500 font-semibold">
-                                    Quantity is required!
-                                  </p>
-                                )}
-                              </div>
-
-                              {/* Price. */}
-                              <div className="flex flex-col gap-2">
-                                <label htmlFor="" className="text-[#2f206b]">
-                                  Price
-                                </label>
-                                <input
-                                  type="number"
-                                  placeholder="156.00"
-                                  {...register(`item_list.${index}.price`, {
-                                    required: true,
-                                  })}
-                                  className="w-24 border border-[#7C5DFA] p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
-                                />
-                                {errors.item_list?.[index]?.price && (
-                                  <p className="text-red-500 font-semibold">
-                                    Price is required!
-                                  </p>
-                                )}
-                              </div>
-
-                              {/* Total. */}
-                              <div className="flex flex-col gap-2">
-                                <label
-                                  htmlFor=""
-                                  className="mb-[17px] text-[#2f206b]"
-                                >
-                                  Total
-                                </label>
-                                <span className="font-extrabold text-[#7C5DFA] opacity-70">
-                                  {calculateTotal(index).toFixed(2)}
-                                </span>
-                              </div>
+                      <AnimatePresence>
+                        {fields.map((item, index) => (
+                          <motion.div
+                            key={item.id}
+                            className="flex flex-col gap-6 mb-10"
+                            initial={{ opacity: 0, x: 500 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0 }}
+                          >
+                            {/* Item Name. */}
+                            <div className="flex flex-col gap-2">
+                              <label
+                                htmlFor=""
+                                className="text-[#2f206b] dark:text-white dark:opacity-90"
+                              >
+                                Item Name
+                              </label>
+                              <input
+                                type="text"
+                                {...register(`item_list.${index}.item_name`, {
+                                  required: true,
+                                })}
+                                placeholder="Banner Design"
+                                className="border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                              />
+                              {errors.item_list?.[index]?.item_name && (
+                                <p className="text-red-500 font-semibold">
+                                  Item name is required!
+                                </p>
+                              )}
                             </div>
 
-                            {/* Delete Icon. */}
-                            {index > 0 && (
-                              <div onClick={() => remove(index)}>
-                                <img
-                                  src={deleteIcon}
-                                  alt=""
-                                  className="mt-[30px] w-4 cursor-pointer"
-                                />
+                            <div className="flex flex-row justify-between items-center px-1">
+                              <div className="flex flex-row gap-4">
+                                {/* Quantity. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Qty.
+                                  </label>
+                                  <input
+                                    type="number"
+                                    placeholder="1"
+                                    {...register(
+                                      `item_list.${index}.quantity`,
+                                      {
+                                        required: true,
+                                      }
+                                    )}
+                                    className="w-16 border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                                  />
+                                  {errors.item_list?.[index]?.quantity && (
+                                    <p className="text-red-500 font-semibold">
+                                      Quantity is required!
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Price. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Price
+                                  </label>
+                                  <input
+                                    type="number"
+                                    placeholder="156.00"
+                                    {...register(`item_list.${index}.price`, {
+                                      required: true,
+                                    })}
+                                    className="w-24 border border-[#7C5DFA] dark:border-transparent dark:bg-[#373B53] dark:focus:outline-none p-4 rounded-md border-opacity-70 outline-transparent font-bold focus:outline-[#7C5DFA] focus:duration-300 placeholder:tracking-wide"
+                                  />
+                                  {errors.item_list?.[index]?.price && (
+                                    <p className="text-red-500 font-semibold">
+                                      Price is required!
+                                    </p>
+                                  )}
+                                </div>
+
+                                {/* Total. */}
+                                <div className="flex flex-col gap-2">
+                                  <label
+                                    htmlFor=""
+                                    className="mb-[17px] text-[#2f206b] dark:text-white dark:opacity-90"
+                                  >
+                                    Total
+                                  </label>
+                                  <span className="font-extrabold text-[#7C5DFA] opacity-70 dark:text-white">
+                                    {calculateTotal(index).toFixed(2)}
+                                  </span>
+                                </div>
                               </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+
+                              {/* Delete Icon. */}
+                              {index > 0 && (
+                                <div onClick={() => remove(index)}>
+                                  <img
+                                    src={deleteIcon}
+                                    alt=""
+                                    className="mt-[30px] w-4 cursor-pointer"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
@@ -296,22 +316,22 @@ export default function CreateInvoice() {
               />
 
               {/* Other Btns. */}
-              <div className="flex flex-row justify-between pt-8 border-t-2">
+              <div className="flex flex-row justify-between pt-8 border-t-2 dark:pb-10 dark:md:mt-10">
                 <div
                   onClick={() => setOpen(true)}
-                  className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer"
+                  className="border border-transparent text-[#564791] bg-[#776e9c] rounded-full p-2 bg-opacity-30 font-bold px-3 cursor-pointer hover:opacity-70 duration-200"
                 >
                   Discard
                 </div>
                 <div
                   onClick={submitDraft}
-                  className="border border-transparent text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer"
+                  className="border border-transparent dark:text-white dark:text-opacity-70 text-[#78738d] bg-[#2f206b] rounded-full p-2 font-bold px-3 cursor-pointer hover:opacity-70 duration-200"
                 >
                   Save as Draft
                 </div>
                 <button
                   type="submit"
-                  className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer"
+                  className="border border-transparent text-white bg-[#3b1cb6] rounded-full p-2 font-semibold px-3 cursor-pointer hover:opacity-70 duration-200"
                 >
                   Save & Send
                 </button>

@@ -160,10 +160,20 @@ export async function updateDraftItem(data, id) {
   return res.json();
 }
 
-// export async function deleteItemList(id) {
-//   const res = await fetch("http://localhost:8000/api/delete-item/" + id, {
-//     method: "DELETE",
-//   });
+//delete a single invoice item lists.
+export async function deleteItemList(id) {
+  const res = await fetch("http://localhost:8000/api/delete-item/" + id, {
+    method: "DELETE",
+  });
 
-//   return res.json();
-// }
+  return res.json();
+}
+
+//delete a single draft item lists.
+export async function deleteDraftItemList(id) {
+  const res = await fetch("http://localhost:8000/api/delete-draft-item/" + id, {
+    method: "DELETE",
+  });
+
+  return res.json();
+}
